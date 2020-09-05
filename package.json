@@ -1,0 +1,22 @@
+{
+  "name": "roker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulyc/roker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paulyc/roker/issues"
+  },
+  "homepage": "https://github.com/paulyc/roker#readme",
+  "dependencies": {
+    "mathjs": "^7.2.0"
+  }
+}
