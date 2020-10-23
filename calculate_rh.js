@@ -29,13 +29,12 @@ const logger = new console.Console(process.stdout);
 
 /**
  * See Arden Buck equation
+ * Temperatures in Celsius
+ * dewpoint, indoorTemp both optional, if not specified unavailable info set to NaN
  */
-const RHCalc = function(dewpoint, outdoorTemp, indoorTemp, degreesInF) {
-	if (degreesInF) {
-		dewpoint = RHCalc.DegreesFtoC(dewpoint);
-		outdoorTemp = RHCalc.DegreesFtoC(outdoorTemp);
-		indoorTemp = RHCalc.DegreesFtoC(indoorTemp);
-	}
+const RHCalc = function(outdoorTemp, dewpoint, indoorTemp) {
+	if (dewpoint === void 0) dewpoint = NaN;
+	if (indoorTemp === void 0) indoorTemp = NaN;
 	// calculate saturated vapor pressure
 	this.P_s = RHCalc.a * Math.exp((RHCalc.b - outdoorTemp/RHCalc.d) * (outdoorTemp / (RHCalc.c + outdoorTemp)));
 	this.gamma = (dewpoint * RHCalc.b) / (RHCalc.c + dewpoint);
@@ -51,9 +50,7 @@ RHCalc.c = 257.14; // Degrees C
 RHCalc.d = 234.5;  // Degrees C
 RHCalc.atm = 1013.25; // hPa
 
-RHCalc.DegreesFtoC = function (f) {
-	return 5.0 / 9.0 * (f - 32.0);
-}
+const DegreesFtoC = f => 5.0 / 9.0 * (f - 32.0);
 
 RHCalc.prototype.printResult = function () {
 	logger.info(`Saturated pressure: ${this.P_s.toFixed(2)} hPa Partial pressure: ${this.P_a.toFixed(2)} hPa`);
@@ -61,15 +58,16 @@ RHCalc.prototype.printResult = function () {
 }
 
 function usage(scriptName) {
-	logger.info("Calculate indoor/outdoor relative humidity from (outdoor) dewpoint and");
+	logger.info("Calculate saturated partial pressure of water vapor for temp1,");
+	logger.info("actual partial pressure/relative humidity for temp1 at dewpoint [optional], and for temp2 at dewpoint [optional]");
 	logger.info("(indoor/outdoor) temperatures.");
-	logger.info(`Usage: ${scriptName} [-f|-c] <outdoorDewpoint> <outdoorTemp> <indoorTemp>`);
-	logger.info("-f Temperatures specified in degrees Fahrenheit");
+	logger.info(`Usage: ${scriptName} [-f|-c] <temp1> [dewpoint [temp2]]`);
 	logger.info("-c Temperatures specified in degrees Celsius [default]");
+	logger.info("-f Temperatures specified in degrees Fahrenheit");
 }
 
 function main(argv) {
-	if (argv.length < 5 || argv.length > 6) {
+	if (argv.length < 3 || argv.length > 6) {
 		usage(argv[1]);
 		return void 0;
 	}
@@ -81,11 +79,17 @@ function main(argv) {
 	} else if (argv[i] === '-c') {
 		++i;
 	}
-	const dewpoint = Number.parseFloat(argv[i++]);
-	const outdoorTemp = Number.parseFloat(argv[i++]);
-	const indoorTemp = Number.parseFloat(argv[i++]);
 
-	const c = new RHCalc(dewpoint, outdoorTemp, indoorTemp, tempConvert);
+	let outdoorTemp = Number.parseFloat(argv[i++]);
+	let dewpoint = i < argv.length ? Number.parseFloat(argv[i++]) : NaN;
+	let indoorTemp = i < argv.length ? Number.parseFloat(argv[i++]) : NaN;
+
+	if (tempConvert) {
+		dewpoint = DegreesFtoC(dewpoint);
+		outdoorTemp = DegreesFtoC(outdoorTemp);
+		indoorTemp = DegreesFtoC(indoorTemp);
+	}
+	const c = new RHCalc(outdoorTemp, dewpoint, indoorTemp);
 	c.printResult();
 	return c;
 }
@@ -94,7 +98,7 @@ function test() {
 	//"-c -0.6 7.8 22.8"
 	//Saturated pressure: 10.58 hPa Partial pressure: 5.85 hPa
 	//Calculated outdoor RH 55.3% indoor RH 21.1%
-	var x = new RHCalc(-0.6, 7.8, 22.8);
+	var x = new RHCalc(7.8, -0.6, 22.8);
 	assert.strictEqual(x.P_s.toFixed(2), '10.58');
 	assert.strictEqual(x.P_a.toFixed(2), '5.85');
 	assert.strictEqual(x.outdoorRH.toFixed(1), '55.3');
@@ -102,7 +106,10 @@ function test() {
 	//"-f 31 46 73"
 	//Saturated pressure: 10.57 hPa Partial pressure: 5.87 hPa
 	//Calculated outdoor RH 55.6% indoor RH 21.2%
-	x = new RHCalc(31, 46, 73, true);
+	let dp = DegreesFtoC(31);
+	let t_out = DegreesFtoC(46);
+	let t_in = DegreesFtoC(73);
+	x = new RHCalc(t_out, dp, t_in);
 	assert.strictEqual(x.P_s.toFixed(2), '10.57');
 	assert.strictEqual(x.P_a.toFixed(2), '5.87');
 	assert.strictEqual(x.outdoorRH.toFixed(1), '55.6');
