@@ -53,27 +53,51 @@ const RHCalc = function(temp, atm) {
 	}
 };
 
+const ardenBuckParam = (t, params) => Math.exp((params.b - t/params.d)*(t/(params.c+t)));
+const gamma = (t, rh, params) => Math.log1p((rh/100.0)*ardenBuckParam(t, params));
+// T_dp = c * gamma(t, rh) / (b - gamma(t,rh))
+// T_dp * b  = gamma * (c + T_dp)
+// gamma = (T_dp * b) / (c + T_dp)
+const gammaFromDewpoint = (dewpoint, params) => (dewpoint * params.b) / (params.c + dewpoint);
+
 /*
  * Calculate pressure/RH at dewpoint (frostpoint) and temp2, both optional temps in C
  * if not specified, unavailable outputs set to NaN
  */
-RHCalc.prototype.calculate = function (dewpoint, temp2) {
+RHCalc.prototype.calculate = function (dewpoint, temp2, rh) {
 	if (dewpoint === void 0) dewpoint = NaN;
 	this.dewpoint = dewpoint;
 	if (temp2 === void 0) temp2 = NaN;
 	this.temp2 = temp2;
 
 	// calculate saturation vapor pressure
-	this.atmCorrection = this.atm / 1013.25;
-	this.P_s = this.atmCorrection * this.a * Math.exp((this.b - this.temp1/this.d) * (this.temp1 / (this.c + this.temp1)));
-	this.gamma = (this.dewpoint * this.b) / (this.c + this.dewpoint);
-	this.RH_1 = 100.0 * Math.exp(this.gamma) / Math.exp((this.b - this.temp1/this.d) * (this.temp1 / (this.c + this.temp1)));
+	this.atmCorrection = this.atm / StdAtmosphere;
+	this.P_s = this.atmCorrection * this.a * ardenBuckParam(this.temp1, this);
+	this.gamma = gammaFromDewpoint(this.dewpoint, this);
+	this.P_a = this.atmCorrection * this.a * Math.exp(this.gamma);
+	this.RH_1 = 100.0 * Math.exp(this.gamma) / ardenBuckParam(this.temp1, this);
+	// actual vapor pressure
+	this.RH_2 = 100.0 * Math.exp(this.gamma) / ardenBuckParam(this.temp2, this);
+};
+
+// not tested
+RHCalc.prototype.calculateFromRH = function (rh, temp2) {
+	this.RH_1 = rh;
+	if (temp2 === void 0) temp2 = NaN;
+	this.temp2 = temp2;
+
+	// calculate saturation vapor pressure
+	this.atmCorrection = this.atm / StdAtmosphere;
+	this.P_s = this.atmCorrection * this.a * ardenBuckParam(this.temp1, this);
+	this.gamma = gamma(this.temp1, this.RH_1);
+	this.dewpoint = this.c * this.gamma / (this.b - this.gamma);
 	// actual vapor pressure
 	this.P_a = this.atmCorrection * this.a * Math.exp(this.gamma);
-	this.RH_2 = 100.0 * Math.exp(this.gamma) / Math.exp((this.b - this.temp2/this.d) * (this.temp2 / (this.c + this.temp2)));
+	this.RH_2 = 100.0 * Math.exp(this.gamma) / ardenBuckParam(this.temp2, this);
 };
 
 const DegreesFtoC = f => 5.0 / 9.0 * (f - 32.0);
+const DegreesCtoF = c => c * 9.0 / 5.0 + 32.0;
 
 RHCalc.prototype.printResult = function () {
 	logger.info(`Saturation pressure = [${this.P_s.toFixed(2)} hPa] Partial pressure at dewpoint/frostpoint = [${this.P_a.toFixed(2)} hPa]`);
@@ -131,6 +155,18 @@ function main(argv) {
 }
 
 function test() {
+	assert.strictEqual(DegreesCtoF(-40).toFixed(1), '-40.0');
+	assert.strictEqual(DegreesCtoF(0).toFixed(1), '32.0');
+	assert.strictEqual(DegreesCtoF(10).toFixed(1), '50.0');
+	assert.strictEqual(DegreesCtoF(20).toFixed(1), '68.0');
+	assert.strictEqual(DegreesCtoF(30).toFixed(1), '86.0');
+
+	assert.strictEqual(DegreesFtoC(-40).toFixed(1), '-40.0');
+	assert.strictEqual(DegreesFtoC(32).toFixed(1), '0.0');
+	assert.strictEqual(DegreesFtoC(50).toFixed(1), '10.0');
+	assert.strictEqual(DegreesFtoC(68).toFixed(1), '20.0');
+	assert.strictEqual(DegreesFtoC(86).toFixed(1), '30.0');
+
 	//"-c 7.8 -0.6 22.8"
 	//Saturation pressure = [10.58 hPa] Partial pressure at dewpoint/frostpoint = [5.85 hPa]
 	//Calculated RH at temp 1 = [55.3%] RH at temp 2 = [21.1%]
