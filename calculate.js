@@ -49,6 +49,11 @@ const RHCalc = function(temp, atm) {
 	this.atm = atm || StdAtmosphere; // can't very well be zero, according to the 2nd law of thermodynamics, or this program couldn't exist!
 	this.dewpoint = NaN;
 	this.temp2 = NaN;
+	this.RH_1 = NaN;
+	this.RH_2 = NaN;
+	this.P_a = NaN;
+	this.P_a_2 = NaN;
+	this.P_s = NaN;
 
 	if (temp > 0) {
 		this.a = 6.1121; // hPa
@@ -67,11 +72,10 @@ const RHCalc = function(temp, atm) {
  * Calculate pressure/RH at dewpoint (frostpoint) and temp2, both optional temps in C
  * if not specified, unavailable outputs set to NaN
  */
-RHCalc.prototype.calculate = function (dewpoint, temp2) {
-	if (dewpoint === void 0) dewpoint = NaN;
-	this.dewpoint = dewpoint;
-	if (temp2 === void 0) temp2 = NaN;
-	this.temp2 = temp2;
+RHCalc.prototype.calculate = function (dewpoint, temp2, rh2) {
+	this.dewpoint = dewpoint === void 0 ? NaN : dewpoint;
+	this.temp2 = temp2 === void 0 ? NaN : temp2;
+	this.RH_2 = rh2 === void 0 ? NaN : rh2;
 
 	// calculate saturation vapor pressure
 	this.atmCorrection = this.atm / StdAtmosphere;
@@ -80,13 +84,17 @@ RHCalc.prototype.calculate = function (dewpoint, temp2) {
 	// actual vapor pressure
 	this.P_a = this.atmCorrection * PressureFromDewpoint(this.dewpoint, this);
 	this.RH_1 = 100.0 * Math.exp(this.gamma) / ardenBuckParam(this.temp1, this);
-	this.RH_2 = 100.0 * Math.exp(this.gamma) / ardenBuckParam(this.temp2, this);
+	if (this.RH_2) {
+		this.P_a_2 = this.atmCorrection * this.a * Math.exp(gammaFromRH(this.temp2, this.RH_2, this));
+	} else {
+		this.RH_2 = 100.0 * Math.exp(this.gamma) / ardenBuckParam(this.temp2, this);
+	}
 };
 
-RHCalc.prototype.calculateFromRH = function (rh, temp2) {
+RHCalc.prototype.calculateFromRH = function (rh, temp2, rh2) {
 	this.RH_1 = rh;
-	if (temp2 === void 0) temp2 = NaN;
-	this.temp2 = temp2;
+	this.temp2 = temp2 === void 0 ? NaN : temp2;
+	this.RH_2 = rh2 === void 0 ? NaN : rh2;
 
 	// calculate saturation vapor pressure
 	this.atmCorrection = this.atm / StdAtmosphere;
@@ -97,17 +105,29 @@ RHCalc.prototype.calculateFromRH = function (rh, temp2) {
 	//this.P_a = this.atmCorrection * this.a * Math.exp(this.gamma);
 	this.dewpoint = DewpointFromPressure(this.P_a, this);
 	//this.dewpoint = this.c * this.gamma / (this.b - this.gamma);
-	this.RH_2 = 100.0 * Math.exp(gammaFromDewpoint(this.dewpoint, this)) / ardenBuckParam(this.temp2, this);
+	this.P_a = this.atmCorrection * this.a * Math.exp(this.gamma);
+	if (this.RH_2) {
+		this.P_a_2 = this.atmCorrection * this.a * Math.exp(gammaFromRH(this.temp2, this.RH_2, this));
+	} else {
+		this.RH_2 = 100.0 * Math.exp(gammaFromDewpoint(this.dewpoint, this)) / ardenBuckParam(this.temp2, this);
+	}
 };
 
 RHCalc.prototype.printResult = function () {
-	logger.info(`Temp 1 = [${this.temp1.toFixed(1)} C] Temp 2 = [${this.temp2.toFixed(1)} C] Dewpoint/Frostpoint = [${this.dewpoint.toFixed(1)} C]`);
-	logger.info(`Saturation pressure = [${this.P_s.toFixed(2)} hPa] Partial pressure at dewpoint/frostpoint = [${this.P_a.toFixed(2)} hPa]`);
-	logger.info(`Calculated RH at temp 1 = [${this.RH_1.toFixed(1)}%] RH at temp 2 = [${this.RH_2.toFixed(1)}%]`);
+	logger.info(`
+	Temp 1 = [${this.temp1.toFixed(1)} C]
+	Temp 2 = [${this.temp2.toFixed(1)} C]
+	Dewpoint/Frostpoint = [${this.dewpoint.toFixed(1)} C]
+	Saturation pressure = [${this.P_s.toFixed(2)} hPa]
+	Partial pressure at temp1 = [${this.P_a.toFixed(2)} hPa]
+	Partial pressure at temp2 = [${this.P_a_2 ? this.P_a_2.toFixed(2) : this.P_a.toFixed(2)} hPa]
+	RH at temp 1 = [${this.RH_1.toFixed(1)}%]
+	RH at temp 2 = [${this.RH_2.toFixed(1)}%]
+`);
 }
 
 function usage(scriptName) {
-	logger.info(`Usage: ${scriptName} [-f|-c] [-p <atmosphericPressure>] <temp1 [dewpoint [temp2]]>|<-r <relativeHumidity> temp1 [temp2]>`);
+	logger.info(`Usage: ${scriptName} [-f|-c] [-p <atmosphericPressure>] <temp1 [dewpoint [temp2 [rh2]]]>|<-r <relativeHumidity> temp1 [temp2 [rh2]]>`);
 	logger.info("Calculates saturation partial pressure of water vapor for temp1, ");
 	logger.info("actual partial pressure/relative humidity for temp1 at dewpoint (frostpoint) [optional], ");
 	logger.info("and for temp2 at equal pressure [optional]");
@@ -117,6 +137,19 @@ function usage(scriptName) {
 	logger.info("-p Atmospheric pressure in hPa [default = 1013.25]");
 	logger.info("-r Relative humidity in % at temp1 [calculate dewpoint]");
 	logger.info("-d Dewpoint [calculate relative humidity]");
+}
+
+function parseTemp(s, convertFromF) {
+	switch (s[s.length-1]) {
+		case 'c':
+		case 'C':
+			return Number.parseFloat(s);
+		case 'f':
+		case 'F':
+			return DegreesFtoC(Number.parseFloat(s));
+		default:
+			return convertFromF ? DegreesFtoC(Number.parseFloat(s)) : Number.parseFloat(s);
+	}
 }
 
 function main(argv) {
@@ -147,25 +180,17 @@ function main(argv) {
 	}
 
 	// the Zen of JS, anything not specced just becomes NaN and propagates to the unknown outputs
-	let temp1 = Number.parseFloat(argv.shift());
-	let dewpoint = Number.NaN;
-	if (Number.isNaN(rh)) {
-		dewpoint = Number.parseFloat(argv.shift());
-	}
-	let temp2 = Number.parseFloat(argv.shift());
-
-	if (tempConvert) {
-		dewpoint = DegreesFtoC(dewpoint);
-		temp1 = DegreesFtoC(temp1);
-		temp2 = DegreesFtoC(temp2);
-	}
+	const temp1 = parseTemp(argv.shift(), tempConvert);
+	const dewpoint = Number.isNaN(rh) ? parseTemp(argv.shift(), tempConvert) : NaN;
+	const temp2 = parseTemp(argv.shift());
+	const rh2 = Number.parseFloat(argv.shift());
 
 	const c = new RHCalc(temp1, atm);
 
 	if (!rh) {
-		c.calculate(dewpoint, temp2);
+		c.calculate(dewpoint, temp2, rh2);
 	} else {
-		c.calculateFromRH(rh, temp2);
+		c.calculateFromRH(rh, temp2, rh2);
 	}
 	c.printResult();
 	return c;
