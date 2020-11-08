@@ -73,9 +73,9 @@ const RHCalc = function(temp, atm) {
  * if not specified, unavailable outputs set to NaN
  */
 RHCalc.prototype.calculate = function (dewpoint, temp2, rh2) {
-	this.dewpoint = dewpoint === void 0 ? NaN : dewpoint;
-	this.temp2 = temp2 === void 0 ? NaN : temp2;
-	this.RH_2 = rh2 === void 0 ? NaN : rh2;
+	if ('number' === typeof dewpoint) this.dewpoint = dewpoint;
+	if ('number' === typeof temp2) this.temp2 = temp2;
+	if ('number' === typeof rh2) this.RH_2 = rh2;
 
 	// calculate saturation vapor pressure
 	this.atmCorrection = this.atm / StdAtmosphere;
@@ -92,9 +92,9 @@ RHCalc.prototype.calculate = function (dewpoint, temp2, rh2) {
 };
 
 RHCalc.prototype.calculateFromRH = function (rh, temp2, rh2) {
-	this.RH_1 = rh;
-	this.temp2 = temp2 === void 0 ? NaN : temp2;
-	this.RH_2 = rh2 === void 0 ? NaN : rh2;
+	if ('number' === typeof rh) this.RH_1 = rh;
+	if ('number' === typeof temp2) this.temp2 = temp2;
+	if ('number' === typeof rh2) this.RH_2 = rh2;
 
 	// calculate saturation vapor pressure
 	this.atmCorrection = this.atm / StdAtmosphere;
@@ -120,7 +120,7 @@ RHCalc.prototype.printResult = function () {
 	Dewpoint/Frostpoint = [${this.dewpoint.toFixed(1)} C]
 	Saturation pressure = [${this.P_s.toFixed(2)} hPa]
 	Partial pressure at temp1 = [${this.P_a.toFixed(2)} hPa]
-	Partial pressure at temp2 = [${this.P_a_2 ? this.P_a_2.toFixed(2) : this.P_a.toFixed(2)} hPa]
+	Partial pressure at temp2 = [${this.P_a_2.toFixed(2)} hPa]
 	RH at temp 1 = [${this.RH_1.toFixed(1)}%]
 	RH at temp 2 = [${this.RH_2.toFixed(1)}%]
 `);
@@ -140,6 +140,7 @@ function usage(scriptName) {
 }
 
 function parseTemp(s, convertFromF) {
+	if ('string' !== typeof s) return NaN;
 	switch (s[s.length-1]) {
 		case 'c':
 		case 'C':
@@ -182,7 +183,7 @@ function main(argv) {
 	// the Zen of JS, anything not specced just becomes NaN and propagates to the unknown outputs
 	const temp1 = parseTemp(argv.shift(), tempConvert);
 	const dewpoint = Number.isNaN(rh) ? parseTemp(argv.shift(), tempConvert) : NaN;
-	const temp2 = parseTemp(argv.shift());
+	const temp2 = parseTemp(argv.shift(), tempConvert);
 	const rh2 = Number.parseFloat(argv.shift());
 
 	const c = new RHCalc(temp1, atm);
