@@ -24,7 +24,7 @@
   * (indoor/outdoor) temperatures.
   */
 const roker = require('./lib');
-const { Physics: { StdAtmosphere, DegreesFtoC }, RHCalc, logger } = require('./lib');
+const { Physics: { StdAtmosphere, DegreesFtoC }, RHCalc, logger } = roker;
 
 function usage(scriptName) {
 	logger.info(`Usage: ${scriptName} [-f|-c] [-p <atmosphericPressure>] <temp1 [dewpoint [temp2 [rh2]]]>|<-r <relativeHumidity> temp1 [temp2 [rh2]]>`);
@@ -57,8 +57,7 @@ function main(argv) {
 	const nodeExecutable = argv.shift();
 	const script = argv.shift();
 	if (argv.length == 0 || argv[0] === '-h') {
-		usage(script);
-		return void 0;
+		return usage(script);
 	}
 	let tempConvert = false;
 	let atm = StdAtmosphere;
