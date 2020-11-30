@@ -27,10 +27,8 @@ const roker = require('./lib');
 const { Physics: { StdAtmosphere, DegreesFtoC }, RHCalc, logger } = roker;
 
 function usage(scriptName) {
-	logger.info(`Usage: ${scriptName} [-f|-c] [-p <atmosphericPressure>] <temp1 [dewpoint [temp2 [rh2]]]>|<-r <relativeHumidity> temp1 [temp2 [rh2]]>`);
-	logger.info("Calculates saturation partial pressure of water vapor for temp1, ");
-	logger.info("actual partial pressure/relative humidity for temp1 at dewpoint (frostpoint) [optional], ");
-	logger.info("and for temp2 at equal pressure [optional]");
+	logger.info(`Usage:\n${scriptName} [-f|-c] [-p <atmosphericPressure>] <temp1 [dewpoint [temp2 [rh2]]]>|<-r <relativeHumidity> temp1 [temp2 [rh2]]>`);
+	logger.info("Calculates saturation partial pressure of water vapor for temp1, actual partial pressure/relative humidity for temp1 at dewpoint/frostpoint, and for temp2 at equal pressure, or rh2, if provided");
 	logger.info("-h Show this help");
 	logger.info("-c Temperatures specified in degrees Celsius [default]");
 	logger.info("-f Temperatures specified in degrees Fahrenheit");
@@ -61,7 +59,7 @@ function main(argv) {
 	}
 	let tempConvert = false;
 	let atm = StdAtmosphere;
-	let rh = Number.NaN;
+	let rh = NaN;
 	while (argv.length > 0) {
 		if (argv[0] === '-f') {
 			tempConvert = true;
@@ -87,7 +85,7 @@ function main(argv) {
 
 	const c = new RHCalc(temp1, atm);
 
-	if (!rh) {
+	if (Number.isNaN(rh)) {
 		c.calculate(dewpoint, temp2, rh2);
 	} else {
 		c.calculateFromRH(rh, temp2, rh2);
