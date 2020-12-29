@@ -1,0 +1,32 @@
+[settings]
+
+
+[requires]
+
+
+[options]
+
+
+[full_settings]
+    build_type=Release
+    compiler=gcc
+    compiler.libcxx=libstdc++11
+    compiler.version=10
+
+[full_requires]
+    fmt/7.0.3:b173bbda18164d49a449ffadc1c9e817f49e819d
+    ms-gsl/3.1.0:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+
+[full_options]
+    build_docs=True
+    downcast_mode=on
+    fmt:fPIC=True
+    fmt:header_only=False
+    fmt:shared=False
+    fmt:with_fmt_alias=False
+
+[recipe_hash]
+
+
+[env]
+
