@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="formLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>40</y>
+      <width>381</width>
+      <height>491</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="temperature1Label">
+       <property name="text">
+        <string>Temperature 1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="temperature1LineEdit"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="dewpoint1Label">
+       <property name="text">
+        <string>Dewpoint 1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="dewpoint1LineEdit"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="relativeHumidity1Label">
+       <property name="text">
+        <string>Relative Humidity 1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="relativeHumidity1LineEdit"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="temperature2Label">
+       <property name="text">
+        <string>Temperature 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="temperature2LineEdit"/>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="dewpoint2Label">
+       <property name="text">
+        <string>Dewpoint 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QLineEdit" name="dewpoint2LineEdit"/>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="relativeHumidity2Label">
+       <property name="text">
+        <string>Relative Humidity 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLineEdit" name="relativeHumidity2LineEdit"/>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="partialPressureH2O2Label">
+       <property name="text">
+        <string>Partial Pressure H2O 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QLineEdit" name="partialPressureH2O2LineEdit"/>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="atmosphericPressureLabel">
+       <property name="text">
+        <string>Atmospheric Pressure</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1">
+      <widget class="QLineEdit" name="atmosphericPressureLineEdit"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="partialPressureH2O1Label">
+       <property name="text">
+        <string>Partial Pressure H2O 1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="partialPressureH2O1LineEdit"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="saturationPressureH2O1Label">
+       <property name="text">
+        <string>Saturation Pressure H2O 1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="saturationPressureH2O1LineEdit"/>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="saturationPressureH2O2Label">
+       <property name="text">
+        <string>Saturation Pressure H2O 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QLineEdit" name="saturationPressureH2O2LineEdit"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuRoker">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionExit"/>
+   </widget>
+   <addaction name="menuRoker"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

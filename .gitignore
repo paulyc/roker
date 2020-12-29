@@ -71,5 +71,5 @@ Thumbs.db
 *.dll
 *.exe
 
-node_modules
 build
+CMakeLists.txt.user
