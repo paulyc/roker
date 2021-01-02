@@ -23,32 +23,18 @@
   * Calculate indoor/outdoor relative humidity from (outdoor) dewpoint and
   * (indoor/outdoor) temperatures.
   */
-const roker = require('./lib');
-const { Physics: {DegreesFtoC }, RHCalc, logger } = roker;
+const { RHCalc, logger, _test } = require('./lib');
 
 function usage(scriptName) {
-	logger.info(`Usage:\n${scriptName} [-f|-c] [-p <atmosphericPressure>] <-t temp1 [-d dewpoint]|[-r relativeHumidity]> [[-t temp2] [-d dewpoint] [-r relativeHumidity]]`);
+	logger.info(`Usage:\n${scriptName} [-f|-c] [-p <atmosphericPressure>] <[-t] temp1 [[-d]|-r <dewpointOrRelativeHumidity>]> [[-t] temp2 [[-d]|-r <dewpointOrRelativeHumidity>]]`);
 	logger.info("Calculates saturation partial pressure of water vapor for temp1, actual partial pressure/relative humidity for temp1 at dewpoint/frostpoint, and for temp2 at equal pressure, or rh2, if provided");
 	logger.info("-h Show this help");
 	logger.info("-c Temperatures specified in degrees Celsius [default]");
 	logger.info("-f Temperatures specified in degrees Fahrenheit");
+	logger.info("-k Temperatures specified in Kelvin");
 	logger.info("-p Atmospheric pressure in hPa [default = 1013.25]");
 	logger.info("-r Relative humidity in % at temp1 [calculate dewpoint]");
 	logger.info("-d Dewpoint [calculate relative humidity]");
-}
-
-function parseTemp(s, convertFromF) {
-	if ('string' !== typeof s) return NaN;
-	switch (s[s.length-1]) {
-		case 'c':
-		case 'C':
-			return Number.parseFloat(s);
-		case 'f':
-		case 'F':
-			return DegreesFtoC(Number.parseFloat(s));
-		default:
-			return convertFromF ? DegreesFtoC(Number.parseFloat(s)) : Number.parseFloat(s);
-	}
 }
 
 function main(argv) {
@@ -58,24 +44,21 @@ function main(argv) {
 	if (argv.length == 0 || argv[0] === '-h') {
 		return usage(script);
 	}
-	let tempConvert = false;
 	const calc = new RHCalc();
 	while (argv.length > 0) {
 		let arg = argv.shift();
-		if (arg === '-c') {
-			tempConvert = false;
-		} else if (arg === '-f') {
-			tempConvert = true;
-		} else if (arg === '-t') {
-			calc.addTemp(parseTemp(argv.shift(), tempConvert));
-		} else if (arg === '-d') {
-			calc.addDewpoint(parseTemp(argv.shift(), tempConvert));
-		} else if (arg === '-r') {
-			calc.addHumidity(Number.parseFloat(argv.shift()));
+		if (arg === '-c' || arg === '-f' || arg === '-k') {
+			calc.setTempUnits(arg[1]);
 		} else if (arg === '-p') {
-			calc.setPressure(Number.parseFloat(argv.shift()));
+			calc.setPressure(argv.shift());
+		} else if (arg === '-t') {
+			calc.addTemp(argv.shift());
+		} else if (arg === '-d') {
+			calc.addDewpoint(argv.shift());
+		} else if (arg === '-r') {
+			calc.addHumidity(argv.shift());
 		} else {
-			break;
+			calc.addParam(arg);
 		}
 	}
 
@@ -84,7 +67,7 @@ function main(argv) {
 }
 
 function test() {
-	roker._test();
+	_test();
 }
 
 main(process.argv);
