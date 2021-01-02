@@ -24,10 +24,10 @@
   * (indoor/outdoor) temperatures.
   */
 const roker = require('./lib');
-const { Physics: { StdAtmosphere, DegreesFtoC }, RHCalc, logger } = roker;
+const { Physics: {DegreesFtoC }, RHCalc, logger } = roker;
 
 function usage(scriptName) {
-	logger.info(`Usage:\n${scriptName} [-f|-c] [-p <atmosphericPressure>] <temp1 [dewpoint [temp2 [rh2]]]>|<-r <relativeHumidity> temp1 [temp2 [rh2]]>`);
+	logger.info(`Usage:\n${scriptName} [-f|-c] [-p <atmosphericPressure>] <-t temp1 [-d dewpoint]|[-r relativeHumidity]> [[-t temp2] [-d dewpoint] [-r relativeHumidity]]`);
 	logger.info("Calculates saturation partial pressure of water vapor for temp1, actual partial pressure/relative humidity for temp1 at dewpoint/frostpoint, and for temp2 at equal pressure, or rh2, if provided");
 	logger.info("-h Show this help");
 	logger.info("-c Temperatures specified in degrees Celsius [default]");
@@ -54,44 +54,33 @@ function parseTemp(s, convertFromF) {
 function main(argv) {
 	const nodeExecutable = argv.shift();
 	const script = argv.shift();
+
 	if (argv.length == 0 || argv[0] === '-h') {
 		return usage(script);
 	}
 	let tempConvert = false;
-	let atm = StdAtmosphere;
-	let rh = NaN;
+	const calc = new RHCalc();
 	while (argv.length > 0) {
-		if (argv[0] === '-f') {
+		let arg = argv.shift();
+		if (arg === '-c') {
+			tempConvert = false;
+		} else if (arg === '-f') {
 			tempConvert = true;
-			argv.shift();
-		} else if (argv[0] === '-c') {
-			argv.shift();
-		} else if (argv[0] === '-p') {
-			argv.shift();
-			atm = Number.parseFloat(argv.shift());
-		} else if (argv[0] === '-r') {
-			argv.shift();
-			rh = Number.parseFloat(argv.shift());
+		} else if (arg === '-t') {
+			calc.addTemp(parseTemp(argv.shift(), tempConvert));
+		} else if (arg === '-d') {
+			calc.addDewpoint(parseTemp(argv.shift(), tempConvert));
+		} else if (arg === '-r') {
+			calc.addHumidity(Number.parseFloat(argv.shift()));
+		} else if (arg === '-p') {
+			calc.setPressure(Number.parseFloat(argv.shift()));
 		} else {
 			break;
 		}
 	}
 
-	// the Zen of JS, anything not specced just becomes NaN and propagates to the unknown outputs
-	const temp1 = parseTemp(argv.shift(), tempConvert);
-	const dewpoint = Number.isNaN(rh) ? parseTemp(argv.shift(), tempConvert) : NaN;
-	const temp2 = parseTemp(argv.shift(), tempConvert);
-	const rh2 = Number.parseFloat(argv.shift());
-
-	const c = new RHCalc(temp1, atm);
-
-	if (Number.isNaN(rh)) {
-		c.calculate(dewpoint, temp2, rh2);
-	} else {
-		c.calculateFromRH(rh, temp2, rh2);
-	}
-	c.printResult();
-	return c;
+	calc.calculate();
+	calc.printResult();
 }
 
 function test() {
