@@ -1,4 +1,5 @@
-// Copyright (C) 2021 Paul Ciarlo <paul.ciarlo@ getMaxListeners.com
+//
+// Copyright (C) 2021 Paul Ciarlo <paul.ciarlo@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,13 +18,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+//
 
-const Physics = require('./physics');
-const RHCalc = require('./rhcalc');
-const logger = require('./logger');
+const {DegreesCtoF, DegreesFtoC} = require('../lib/physics');
+const assert = require('assert');
 
-module.exports = {
-    logger,
-    Physics,
-    RHCalc,
+module.exports = async function _test() {
+    assert.strictEqual(DegreesCtoF(-40).toFixed(1), '-40.0');
+	assert.strictEqual(DegreesCtoF(0).toFixed(1), '32.0');
+	assert.strictEqual(DegreesCtoF(10).toFixed(1), '50.0');
+	assert.strictEqual(DegreesCtoF(20).toFixed(1), '68.0');
+	assert.strictEqual(DegreesCtoF(30).toFixed(1), '86.0');
+
+	assert.strictEqual(DegreesFtoC(-40).toFixed(1), '-40.0');
+	assert.strictEqual(DegreesFtoC(32).toFixed(1), '0.0');
+	assert.strictEqual(DegreesFtoC(50).toFixed(1), '10.0');
+	assert.strictEqual(DegreesFtoC(68).toFixed(1), '20.0');
+    assert.strictEqual(DegreesFtoC(86).toFixed(1), '30.0');
 };

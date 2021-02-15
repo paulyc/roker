@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Copyright (C) 2020 Paul Ciarlo <paul.ciarlo@gmail.com>
+// Copyright (C) 2021 Paul Ciarlo <paul.ciarlo@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
   * (indoor/outdoor) temperatures.
   */
 const { RHCalc, logger, _test } = require('./lib');
+const test = require('./test');
 
 function usage(scriptName) {
 	logger.info(`Usage:\n${scriptName} [-f|-c] [-p <atmosphericPressure>] <[-t] temp1 [[-d]|-r <dewpointOrRelativeHumidity>]> [[-t] temp2 [[-d]|-r <dewpointOrRelativeHumidity>]]`);
@@ -37,7 +38,7 @@ function usage(scriptName) {
 	logger.info("-d Dewpoint [calculate relative humidity]");
 }
 
-function main(argv) {
+async function main(argv) {
 	const nodeExecutable = argv.shift();
 	const script = argv.shift();
 
@@ -66,9 +67,8 @@ function main(argv) {
 	calc.printResult();
 }
 
-function test() {
-	_test();
-}
-
-main(process.argv);
-test();
+main(process.argv)
+	.then(res => console.log(res))
+	.then(() => test())
+	.catch(e => console.error(e))
+	.finally(() => {});
