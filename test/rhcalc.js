@@ -23,7 +23,7 @@
 const RHCalc = require('../lib/rhcalc');
 const assert = require('assert');
 
-module.exports = async function _test() {
+module.exports = function Test() {
     //"-c 7.8 -0.6 22.8"
 	//Saturation pressure = [10.58 hPa] Partial pressure at dewpoint/frostpoint = [5.85 hPa]
 	//Calculated RH at temp 1 = [55.3%] RH at temp 2 = [21.1%]
@@ -38,7 +38,7 @@ module.exports = async function _test() {
 	let x = calc.outputs[0];
 	let y = calc.outputs[1];
 	assert.strictEqual(x.P_s.toFixed(2), '10.58');
-	assert.strictEqual(x.P_a.toFixed(2), '5.85');
+	assert.strictEqual(x.P_w.toFixed(2), '5.85');
 	assert.strictEqual(x.rh.toFixed(1), '55.3');
 	assert.strictEqual(y.rh.toFixed(1), '21.1');
 
@@ -55,8 +55,8 @@ module.exports = async function _test() {
 	x = calc.outputs[0];
 	y = calc.outputs[1];
 	assert.strictEqual(x.P_s.toFixed(2), '10.58');
-	assert.strictEqual(x.P_a.toFixed(2), '5.85');
-	assert.strictEqual(y.P_a.toFixed(2), '5.85');
+	assert.strictEqual(x.P_w.toFixed(2), '5.85');
+	assert.strictEqual(y.P_w.toFixed(2), '5.85');
 	assert.strictEqual(x.dp.toFixed(1), '-0.6');
 	assert.strictEqual(y.rh.toFixed(1), '21.1');
 
@@ -75,7 +75,7 @@ module.exports = async function _test() {
 	x = calc.outputs[0];
 	y = calc.outputs[1];
 	assert.strictEqual(x.P_s.toFixed(2), '10.57');
-	assert.strictEqual(x.P_a.toFixed(2), '5.87');
+	assert.strictEqual(x.P_w.toFixed(2), '5.87');
 	assert.strictEqual(x.rh.toFixed(1), '55.6');
 	assert.strictEqual(y.rh.toFixed(1), '21.2');
 
@@ -94,7 +94,11 @@ module.exports = async function _test() {
 	x = calc.outputs[0];
 	y = calc.outputs[1];
 	assert.strictEqual(x.P_s.toFixed(2), '9.39');
-	assert.strictEqual(x.P_a.toFixed(2), '5.21');
+	assert.strictEqual(x.P_w.toFixed(2), '5.21');
 	assert.strictEqual(x.rh.toFixed(1), '55.6');
 	assert.strictEqual(y.rh.toFixed(1), '21.2');
+
+	calc = new RHCalc();
+	calc.addTemp(25);
+	calc.calculate();
 };

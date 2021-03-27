@@ -20,19 +20,39 @@
 // SOFTWARE.
 //
 
-const {DegreesCtoF, DegreesFtoC} = require('../lib/physics');
+const {
+	DegreesCtoF,
+	DegreesFtoC,
+	SpecificEnthalpyDryAir,
+	SpecificEnthalpyH2O,
+	HumidityRatio,
+	SpecificEnthalpyAir,
+} = require('../lib/physics');
 const assert = require('assert');
 
-module.exports = async function _test() {
-    assert.strictEqual(DegreesCtoF(-40).toFixed(1), '-40.0');
+function Test() {
+	TestCtoF();
+	TestFtoC();
+	TestEnthalpy();
+};
+
+module.exports = Test;
+
+function TestCtoF() {
+	assert.strictEqual(DegreesCtoF(-40).toFixed(1), '-40.0');
 	assert.strictEqual(DegreesCtoF(0).toFixed(1), '32.0');
 	assert.strictEqual(DegreesCtoF(10).toFixed(1), '50.0');
 	assert.strictEqual(DegreesCtoF(20).toFixed(1), '68.0');
 	assert.strictEqual(DegreesCtoF(30).toFixed(1), '86.0');
-
+}
+function TestFtoC() {
 	assert.strictEqual(DegreesFtoC(-40).toFixed(1), '-40.0');
 	assert.strictEqual(DegreesFtoC(32).toFixed(1), '0.0');
 	assert.strictEqual(DegreesFtoC(50).toFixed(1), '10.0');
 	assert.strictEqual(DegreesFtoC(68).toFixed(1), '20.0');
-    assert.strictEqual(DegreesFtoC(86).toFixed(1), '30.0');
-};
+	assert.strictEqual(DegreesFtoC(86).toFixed(1), '30.0');
+}
+
+function TestEnthalpy() {
+
+}

@@ -23,7 +23,11 @@
 const physics = require('./physics');
 const rhcalc = require('./rhcalc');
 
-module.exports = async function _test() {
-    await physics();
-    await rhcalc();
+function Test() {
+    physics();
+    rhcalc();
 };
+
+Test();
+
+module.exports = Test;
