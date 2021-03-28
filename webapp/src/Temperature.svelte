@@ -1,6 +1,6 @@
-<input value={c} on:input="{e => setFromC(e.target.value)}" type=number id=degC> °C =
-<input value={f} on:input="{e => setFromF(e.target.value)}" type=number id=degF> °F =
-<input value={k} on:input="{e => setFromK(e.target.value)}" type=number id=degK> K
+<input bind:value={c} on:input on:input="{e => setFromC(e.target.value)}" type=number id=degC> °C =
+<input bind:value={f} on:input="{e => setFromF(e.target.value)}" type=number id=degF> °F =
+<input bind:value={k} on:input="{e => setFromK(e.target.value)}" type=number id=degK> K
 
 <style>
 	input {
