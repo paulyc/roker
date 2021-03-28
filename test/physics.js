@@ -29,7 +29,7 @@ const {
 	HumidityRatio,
 	SaturationPressure,
 	SpecificEnthalpyAir,
-//	LatentHeat,
+	LatentHeat,
 } = require('../lib/physics');
 const assert = require('assert');
 
@@ -63,10 +63,9 @@ function TestEnthalpy() {
 	assert.strictEqual(SpecificEnthalpyAir(25,SaturationPressure(25),StdAtmosphere).toFixed(0),"76");
 	assert.strictEqual(SpecificEnthalpyDryAir(25).toFixed(0), "25");
 	// hmm which is correct 51 or 61?
-	//assert.strictEqual(LatentHeat(25,SaturationPressure(25),StdAtmosphere).toFixed(0), "61");
-	// dont trust "LatentHeat" because of the density dependency
-	//assert.strictEqual(
-	//	LatentHeat(25,SaturationPressure(25),StdAtmosphere).toFixed(0),
-	//	(SpecificEnthalpyAir(25,SaturationPressure(25),StdAtmosphere)-SpecificEnthalpyDryAir(25)).toFixed(0)
-	//);
+	assert.strictEqual(LatentHeat(25,SaturationPressure(25),StdAtmosphere).toFixed(0), "51");
+	assert.strictEqual(
+		LatentHeat(25,SaturationPressure(25),StdAtmosphere).toFixed(0),
+		(SpecificEnthalpyAir(25,SaturationPressure(25),StdAtmosphere)-SpecificEnthalpyDryAir(25)).toFixed(0)
+	);
 }
