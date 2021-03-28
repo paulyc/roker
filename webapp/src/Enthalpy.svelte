@@ -9,9 +9,12 @@
 </style>
 
 <script>
-	export let specificEnthalpy;
-	export let specificEnthalpyDry;
-    export let specificEnthalpySat;
+	 let specificEnthalpy;
+	 let specificEnthalpyDry;
+     let specificEnthalpySat;
+	export let tempC;
+	export let P_w;
+	export let P_a;
 
 	function setFromSpec(value) {
 		specificEnthalpy = +value;

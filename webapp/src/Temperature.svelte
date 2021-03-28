@@ -9,9 +9,9 @@
 </style>
 
 <script>
-	export let c;
-	export let f;
-    export let k;
+	 let c;
+	 let f;
+     let k;
 
 	function setFromC(value) {
 		c = +value;

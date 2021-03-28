@@ -8,8 +8,9 @@
 </style>
 
 <script>
-	export let saturatedPressure;
-	export let partialPressure;
+	 let saturatedPressure;
+	 let partialPressure;
+	export let tempC;
 
 	function setFromSP(value) {
 		saturatedPressure = +value;
