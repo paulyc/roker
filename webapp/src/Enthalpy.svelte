@@ -1,6 +1,9 @@
-<input bind:value={specificEnthalpy} on:input type=number> kJ/kg Specific Enthalpy<br>
-<input bind:value={specificEnthalpyDry} on:input type=number> kJ/kg Specific Enthalpy (Dry)<br>
-<input bind:value={specificEnthalpySat} on:input type=number> kJ/kg Specific Enthalpy (Saturated)
+<div>
+	<input bind:value={h} on:input type=number> kJ/kg Specific Enthalpy<br>
+	<input bind:value={h_w} on:input type=number> kJ/kg Specific Enthalpy (H<sub>2</sub>O)
+	<input bind:value={h_a} on:input type=number> kJ/kg Specific Enthalpy (Dry Air)<br>
+	<input bind:value={h_s} on:input type=number> kJ/kg Specific Enthalpy (Saturated Air)
+</div>
 
 <style>
 	input {
@@ -9,22 +12,8 @@
 </style>
 
 <script>
-	 let specificEnthalpy;
-	 let specificEnthalpyDry;
-     let specificEnthalpySat;
-	  let tempC;
-	  let P_w;
-	  let P_a;
-
-	function setFromSpec(value) {
-		specificEnthalpy = +value;
-	}
-
-	function setFromDry(value) {
-		specificEnthalpyDry= +value;
-	}
-
-    function setFromSat(value) {
-        specificEnthalpySat = +value;
-	}
+	 let h;
+	 let h_a;
+     let h_w;
+	 let h_s;
 </script>
