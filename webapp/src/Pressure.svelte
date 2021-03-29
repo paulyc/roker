@@ -14,6 +14,6 @@
 
 let P_w;
 let P_s;
-let P_a;
+export let P_a;
 
 </script>

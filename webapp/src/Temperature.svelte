@@ -9,7 +9,7 @@
 </style>
 
 <script>
-	 let c;
+	export let c;
 	 let f;
      let k;
 
