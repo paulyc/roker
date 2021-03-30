@@ -29,7 +29,8 @@ const {
 	HumidityRatio,
 	SaturationPressure,
 	SpecificEnthalpyAir,
-	LatentHeat,
+	SpecificEnthalpyH2O_l,
+	ρ,
 } = require('../lib/physics');
 const assert = require('assert');
 
@@ -58,14 +59,14 @@ function TestFtoC() {
 
 function TestEnthalpy() {
 	// SpecificEnthalpyAir saturated at 25 c should be about 76.09 kJ/kg
-	assert.strictEqual(SpecificEnthalpyH2O(0).toFixed(0),"2501");
+	assert.strictEqual(SpecificEnthalpyH2O_l(0).toFixed(0),"2501");
 	assert.strictEqual(SaturationPressure(25).toFixed(0),"32");
 	assert.strictEqual(SpecificEnthalpyAir(25,SaturationPressure(25),StdAtmosphere).toFixed(0),"76");
 	assert.strictEqual(SpecificEnthalpyDryAir(25).toFixed(0), "25");
 	// hmm which is correct 51 or 61?
-	assert.strictEqual(LatentHeat(25,SaturationPressure(25),StdAtmosphere).toFixed(0), "51");
+	assert.strictEqual(SpecificEnthalpyH2O(25,SaturationPressure(25),StdAtmosphere).toFixed(0), "51");
 	assert.strictEqual(
-		LatentHeat(25,SaturationPressure(25),StdAtmosphere).toFixed(0),
+		SpecificEnthalpyH2O(25,SaturationPressure(25),StdAtmosphere).toFixed(0),
 		(SpecificEnthalpyAir(25,SaturationPressure(25),StdAtmosphere)-SpecificEnthalpyDryAir(25)).toFixed(0)
 	);
 }

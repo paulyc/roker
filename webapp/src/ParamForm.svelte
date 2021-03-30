@@ -38,7 +38,7 @@ function updateEnthalpy() {
     h = Physics.SpecificEnthalpyAir(tempC, P_w, P_a);
     h_a = Physics.SpecificEnthalpyDryAir(tempC, P_a);
     h_s = Physics.SpecificEnthalpySaturatedAir(tempC, P_a);
-    h_w = Physics.LatentHeat(tempC, P_w, P_a);
+    h_w = Physics.SpecificEnthalpyH2O(tempC, P_w, P_a);
 }
 
 </script>
