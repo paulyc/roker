@@ -34,11 +34,15 @@
 			dewpoint = opts.dewpoint;
 			P_w = Physics.PressureFromDewpoint(tempC, opts.dewpoint);
 			rh = Physics.RHFromDewpoint(tempC, opts.dewpoint);
+			H = Physics.HumidityRatio(P_w,P_a);
+			ah = Physics.AbsoluteHumidity(tempC,P_w,P_a);
 			dispatch('update',{dewpoint});
 		} else if (opts.rh != null&& !Number.isNaN(opts.rh)) {
 			rh = opts.rh;
 			P_w = Physics.PressureFromRH(tempC, opts.dewpoint);
 			dewpoint = Physics.DewpointFromRH(opts.rh);
+			H = Physics.HumidityRatio(P_w,P_a);
+			ah = Physics.AbsoluteHumidity(tempC,P_w,P_a);
 			dispatch('update',{rh});
 		}
 	}
