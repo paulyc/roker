@@ -9,6 +9,9 @@
 </style>
 
 <script>
+	import { createEventDispatcher } from 'svelte';
+	const dispatch = createEventDispatcher();
+
 	export let c;
 	 let f;
      let k;
@@ -17,17 +20,20 @@
 		c = +value;
         k = c + 273.15;
 		f = +(32 + (9 / 5 * c)).toFixed(1);
+		dispatch('update',{c,f,k});
 	}
 
 	function setFromF(value) {
 		f = +value;
 		c =+(5 / 9 * (f - 32)).toFixed(1);
         k = c + 273.15;
+		dispatch('update',{c,f,k});
 	}
 
     function setFromK(value) {
         k = +value;
         c = k - 273.15;
 		f = +(32 + (9 / 5 * c)).toFixed(1);
+		dispatch('update',{c,f,k});
 	}
 </script>

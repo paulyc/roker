@@ -16,10 +16,12 @@
 </style>
 
 <script>
+	import { createEventDispatcher } from 'svelte';
+	const dispatch = createEventDispatcher();
 	import TempConvert from './Temperature.svelte';
 	import * as Physics from '../../lib/physics.js';
 	export let dewpoint;
-	let rh;
+	 let rh;
 	let ah;
     let H;
 	 let P_w;
@@ -32,10 +34,12 @@
 			dewpoint = opts.dewpoint;
 			P_w = Physics.PressureFromDewpoint(tempC, opts.dewpoint);
 			rh = Physics.RHFromDewpoint(tempC, opts.dewpoint);
-		} else if (opts.rh != null) {
+			dispatch('update',{dewpoint});
+		} else if (opts.rh != null&& !Number.isNaN(opts.rh)) {
 			rh = opts.rh;
 			P_w = Physics.PressureFromRH(tempC, opts.dewpoint);
 			dewpoint = Physics.DewpointFromRH(opts.rh);
+			dispatch('update',{rh});
 		}
 	}
 

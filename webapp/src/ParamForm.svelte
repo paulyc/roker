@@ -20,27 +20,26 @@ let h_s;
 function updateTemp(evt) {
     tempC = evt.target.value;
     P_s = Physics.SaturationPressure(tempC);
-    if ('number'===typeof dewpoint) {
-        P_w = Physics.PressureFromDewpoint(tempC, dewpoint);
-    } else if ('number'===typeof rh) {
-        P_w = Physics.PressureFromRH(tempC, rh);
-    }
+    updateEnthalpy();
 }
 
 function updateHumidity() {
-    if ('number'===typeof dewpoint) {
-        P_w = Physics.PressureFromDewpoint(tempC, dewpoint);
-    } else if ('number'===typeof rh) {
-        P_w = Physics.PressureFromRH(tempC, rh);
-    }
-}
-
-function updatePressure() {
-
+    //if ('number'===typeof dewpoint) {
+        //P_w = Physics.PressureFromDewpoint(tempC, dewpoint);
+        //rh = Physics.RHFromDewpoint(tempC, dewpoint);
+    //} else if ('number'===typeof rh) {
+        //P_w = Physics.PressureFromRH(tempC, rh);
+        //dewpoint = Physics.DewpointFromRH(tempC, rh);
+    //}
+    updateEnthalpy();
 }
 
 function updateEnthalpy() {
-
+    P_w = Physics.PressureFromDewpoint(tempC,dewpoint);
+    h = Physics.SpecificEnthalpyAir(tempC, P_w, P_a);
+    h_a = Physics.SpecificEnthalpyDryAir(tempC, P_a);
+    h_s = Physics.SpecificEnthalpySaturatedAir(tempC, P_a);
+    h_w = Physics.LatentHeat(tempC, P_w, P_a);
 }
 
 </script>
@@ -54,7 +53,7 @@ function updateEnthalpy() {
         </li>
         <li>
             Humidity<br>
-            <HumidityConvert {dewpoint} bind:tempC={tempC} {P_a} bind:P_w="{P_w}" P_s="{P_s}" on:input="{updateHumidity}"/>
+            <HumidityConvert bind:dewpoint={dewpoint} bind:tempC={tempC} {P_a} bind:rh={rh} bind:P_w="{P_w}" P_s="{P_s}" on:input="{updateHumidity}"/>
         </li>
         <!--li>
             Pressure<br>
@@ -62,7 +61,7 @@ function updateEnthalpy() {
         </li-->
         <li>
             Enthalpy<br>
-            <EnthalpyConvert bind:h="{h}" bind:h_w="{h_w}" bind:h_a="{h_a}" bind:h_s="{h_s}" on:input="{updateEnthalpy}"/>
+            <EnthalpyConvert h="{h}" h_w="{h_w}" h_a="{h_a}" h_s="{h_s}" on:input="{updateEnthalpy}"/>
         </li>
     </ul>
 </fieldset>
