@@ -1,6 +1,6 @@
 
 <div>Dewpoint/Frostpoint<br>
-	<TempConvert on:input bind:c={dewpoint} on:input="{e=>update({dewpoint:Number(dewpoint)})}"/><br>
+	<TempConvert on:input bind:c={dewpoint} on:update="{e=>update({dewpoint:Number(e.detail.c)})}"/><br>
 	<input bind:value="{rh}" on:input on:input="{e=>update({rh:Number(e.target.value)})}" type=number> % Relative Humidity =<br>
 	<input disabled bind:value="{ah}" on:input on:input="{e=>update({ah:Number(e.target.value)})}" type=number> kg/m^3 Absolute Humidity =<br>
 	<input disabled bind:value="{H}" on:input on:input="{e=>update({H:Number(e.target.value)})}" type=number> kg/kg Humidity Ratio (mass H<sub>2</sub>O:total airmass)<br>

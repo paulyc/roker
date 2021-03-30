@@ -2,7 +2,6 @@
 import TempConvert from './Temperature.svelte';
 import HumidityConvert from './Humidity.svelte';
 import EnthalpyConvert from './Enthalpy.svelte';
-import PressureConvert from './Pressure.svelte';
 import * as Physics from '../../lib/physics.js';
 
 console.log(JSON.stringify(Physics));
@@ -18,19 +17,19 @@ let h_w;
 let h_s;
 
 function updateTemp(evt) {
-    tempC = evt.target.value;
+    tempC = evt.target ? evt.target.value : evt.detail.c;
     P_s = Physics.SaturationPressure(tempC);
     updateEnthalpy();
 }
 
-function updateHumidity() {
-    //if ('number'===typeof dewpoint) {
-        //P_w = Physics.PressureFromDewpoint(tempC, dewpoint);
-        //rh = Physics.RHFromDewpoint(tempC, dewpoint);
-    //} else if ('number'===typeof rh) {
-        //P_w = Physics.PressureFromRH(tempC, rh);
-        //dewpoint = Physics.DewpointFromRH(tempC, rh);
-    //}
+function updateHumidity(e) {
+    if (e.detail.dewpoint !== void 0) {
+        P_w = Physics.PressureFromDewpoint(tempC, dewpoint);
+        rh = Physics.RHFromDewpoint(tempC, dewpoint);
+    } else if (e.detail.rh !== void 0) {
+        P_w = Physics.PressureFromRH(tempC, rh);
+        dewpoint = Physics.DewpointFromRH(tempC, rh);
+    }
     updateEnthalpy();
 }
 
@@ -49,11 +48,11 @@ function updateEnthalpy() {
     <ul>
         <li>
             Temperature<br>
-            <TempConvert bind:c={tempC} on:input on:input="{updateTemp}"/>
+            <TempConvert bind:c={tempC} on:input on:update="{updateTemp}"/>
         </li>
         <li>
             Humidity<br>
-            <HumidityConvert bind:dewpoint={dewpoint} bind:tempC={tempC} {P_a} bind:rh={rh} bind:P_w="{P_w}" P_s="{P_s}" on:input="{updateHumidity}"/>
+            <HumidityConvert bind:dewpoint={dewpoint} bind:tempC={tempC} {P_a} bind:rh={rh} bind:P_w="{P_w}" P_s="{P_s}" on:update="{updateHumidity}"/>
         </li>
         <!--li>
             Pressure<br>
