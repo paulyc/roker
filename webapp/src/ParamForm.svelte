@@ -15,18 +15,23 @@ let h;
 let h_a;
 let h_w;
 let h_s;
+let humidity;
 
 function updateTemp(evt) {
     tempC = evt.target ? evt.target.value : evt.detail.c;
     P_s = Physics.SaturationPressure(tempC);
+    P_w = Physics.PressureFromDewpoint(tempC, dewpoint);
+    humidity.update();
     updateEnthalpy();
 }
 
 function updateHumidity(e) {
     if (e.detail.dewpoint !== void 0) {
+        dewpoint = e.detail.dewpoint;
         P_w = Physics.PressureFromDewpoint(tempC, dewpoint);
         rh = Physics.RHFromDewpoint(tempC, dewpoint);
     } else if (e.detail.rh !== void 0) {
+        rh = e.detail.rh;
         P_w = Physics.PressureFromRH(tempC, rh);
         dewpoint = Physics.DewpointFromRH(tempC, rh);
     }
@@ -52,7 +57,7 @@ function updateEnthalpy() {
         </li>
         <li>
             Humidity<br>
-            <HumidityConvert bind:dewpoint={dewpoint} bind:tempC={tempC} {P_a} bind:rh={rh} bind:P_w="{P_w}" P_s="{P_s}" on:update="{updateHumidity}"/>
+            <HumidityConvert bind:this={humidity} {dewpoint} {tempC} {P_a} bind:P_w="{P_w}" P_s="{P_s}" on:update="{updateHumidity}"/>
         </li>
         <!--li>
             Pressure<br>
