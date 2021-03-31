@@ -24,19 +24,26 @@ const {
 	StdAtmosphere,
 	DegreesCtoF,
 	DegreesFtoC,
+	DegreesCtoK,
 	SpecificEnthalpyDryAir,
 	SpecificEnthalpyH2O,
 	HumidityRatio,
 	SaturationPressure,
 	SpecificEnthalpyAir,
 	SpecificEnthalpyH2O_l,
-	ρ,
+	DensityAir_H,
+	DensityAir,
+	DensityDryAir,
+	DensityH2O_g,
 } = require('../lib/physics');
 const assert = require('assert');
+const eq = assert.strictEqual;
 
 function Test() {
 	TestCtoF();
 	TestFtoC();
+	TestCtoK();
+	TestDensity();
 	TestEnthalpy();
 };
 
@@ -55,6 +62,20 @@ function TestFtoC() {
 	assert.strictEqual(DegreesFtoC(50).toFixed(1), '10.0');
 	assert.strictEqual(DegreesFtoC(68).toFixed(1), '20.0');
 	assert.strictEqual(DegreesFtoC(86).toFixed(1), '30.0');
+}
+
+function TestCtoK() {
+	assert.strictEqual(DegreesCtoK(-273.15).toFixed(1), '0.0');
+	assert.strictEqual(DegreesCtoK(-40).toFixed(2), (273.15-40).toFixed(2));
+	assert.strictEqual(DegreesCtoK(0).toFixed(2), '273.15');
+	assert.strictEqual(DegreesCtoK(40).toFixed(2), (273.15+40).toFixed(2));
+}
+
+function TestDensity() {
+	eq(DensityDryAir(25,StdAtmosphere).toFixed(2),'1.18');
+	eq(DensityAir_H(HumidityRatio(30,StdAtmosphere),25,StdAtmosphere).toFixed(2), '1.17');
+	eq( DensityAir_H(HumidityRatio(30,StdAtmosphere),25,StdAtmosphere).toFixed(2),
+	    DensityAir(25,30,StdAtmosphere).toFixed(2));
 }
 
 function TestEnthalpy() {
