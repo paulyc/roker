@@ -27,6 +27,11 @@
 		src: url(/operator_mono.woff2);
 	}
 	@font-face {
+		font-family: 'Cascadia Mono';
+		font-style: monospace;
+		src: url(/CascadiaMono.ttf);
+	}
+	@font-face {
 		font-family: 'Operator Mono Book';
 		font-style: monospace;
 		src: url(/OperatorNarrow-Book.woff2);
