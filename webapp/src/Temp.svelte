@@ -11,9 +11,9 @@
 
 	let cString,fString,kString;
 
-	$: cString = c.toFixed(1);
-	$: fString = f.toFixed(1);
-	$: kString = k.toFixed(1);
+	$: cString = c.toString();//.toFixed(1);
+	$: fString = f.toString();//.toFixed(1);
+	$: kString = k.toString();//.toFixed(1);
 
 	$: dispatch('temp', {c,f,k});
 	$:	k = Physics.DegreesCtoK(c);

@@ -26,6 +26,11 @@
 		font-style: monospace;
 		src: url(/operator_mono.woff2);
 	}
+	@font-face {
+		font-family: 'Operator Mono Book';
+		font-style: monospace;
+		src: url(/OperatorNarrow-Book.woff2);
+	}
 	main {
 		font-family: 'Agave Nerd Font Mono';
 	}

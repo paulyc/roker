@@ -69,18 +69,18 @@ export function constantPressure(P_w_fixed,P_s_fixed,P_a_fixed) {
         <li>
             Dewpoint/Frostpoint<br>
             <Temp c={dewpoint} on:temp={e=>updateDewpoint(e.detail.c)}/><br>
-            <input type=number value={relativeHumidity.toFixed(1)} on:input="{e=>updateHumidity(+e.target.value)}"> % Relative Humidity =<br>
-            <input type=number disabled value="{(1e3*absoluteHumidity).toFixed(2)}"> g/m^3 Absolute Humidity =<br>
-            <input type=number disabled value="{(100*humidityRatio).toFixed(3)}"> % Humidity Ratio (mass H<sub>2</sub>O:total airmass)<br>
-            <input type=number value="{P_a.toFixed(1)}"> hPa Atmospheric Pressure<br>
-            <input type=number value="{P_s.toFixed(2)}"> hPa Saturated Pressure H<sub>2</sub>O<br>
-            <input type=number value="{P_w.toFixed(2)}"> hPa Partial Pressure H<sub>2</sub>O<br>
+            <input type=number value={relativeHumidity} on:input="{e=>updateHumidity(+e.target.value)}"> % Relative Humidity =<br>
+            <input type=number disabled value="{(1e3*absoluteHumidity)}"> g/m^3 Absolute Humidity =<br>
+            <input type=number disabled value="{(100*humidityRatio)}"> % Humidity Ratio (mass H<sub>2</sub>O:total airmass)<br>
+            <input type=number value="{P_a}"> hPa Atmospheric Pressure<br>
+            <input type=number value="{P_s}"> hPa Saturated Pressure H<sub>2</sub>O<br>
+            <input type=number value="{P_w}"> hPa Partial Pressure H<sub>2</sub>O<br>
         </li>
         <li>
-	        <input value={h_dry_air.toFixed(2)} on:input type=number> kJ/kg Specific Enthalpy (Dry Air)<br>
-	        <input value={h_sat_air.toFixed(2)} on:input type=number> kJ/kg Specific Enthalpy (Saturated Air)<br>
-            <input value={h_h2o.toFixed(2)} on:input type=number> kJ/kg Specific Enthalpy (H<sub>2</sub>O/Latent)<br>
-            <input value={h_air.toFixed(2)} on:input type=number> kJ/kg Specific Enthalpy<br>
+	        <input value={h_dry_air} on:input type=number> kJ/kg Specific Enthalpy (Dry Air)<br>
+	        <input value={h_sat_air} on:input type=number> kJ/kg Specific Enthalpy (Saturated Air)<br>
+            <input value={h_h2o} on:input type=number> kJ/kg Specific Enthalpy (H<sub>2</sub>O/Latent)<br>
+            <input value={h_air} on:input type=number> kJ/kg Specific Enthalpy<br>
         </li>
     </ul>
 </fieldset>
