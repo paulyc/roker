@@ -19,18 +19,6 @@
 	$:	k = Physics.DegreesCtoK(c);
 	$:	f = Physics.DegreesCtoF(c);
 
-	function setFromF(value) {
-	//	f = +value;
-		c = Physics.DegreesFtoC(+value);
-      //  k = Physics.DegreesCtoK(c);
-	}
-
-    function setFromK(value) {
-      //  k = +value;
-        c = Physics.DegreesKtoC(+value);
-	//	f = Physics.DegreesCtoF(c);
-	}
-	//setFromC(c);
 </script>
 
 <style>

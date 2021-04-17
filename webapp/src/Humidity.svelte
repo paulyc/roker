@@ -1,13 +1,41 @@
+<script>
+	import {createEventDispatcher} from 'svelte';
+	import * as Physics from '../../lib/physics.js';
+	import Temp from './Temp.svelte';
 
-<div>Dewpoint/Frostpoint<br>
-	<TempConvert on:input bind:c={dewpoint} on:update="{e=>update({dewpoint:(e.detail.c)})}"/><br>
-	<input bind:value="{rh}" on:input on:input="{e=>update({rh:(e.target.value)})}" type=number> % Relative Humidity =<br>
-	<input disabled bind:value="{ah}" on:input on:input="{e=>update({ah:(e.target.value)})}" type=number> kg/m^3 Absolute Humidity =<br>
-	<input disabled bind:value="{H}" on:input on:input="{e=>update({H:(e.target.value)})}" type=number> kg/kg Humidity Ratio (mass H<sub>2</sub>O:total airmass)<br>
-	<input bind:value="{P_w}" on:input on:input="{e=>update({P_w:(e.target.value)})}" type=number> hPa Partial Pressure H<sub>2</sub>O<br>
-    <input bind:value="{P_s}" on:input on:input="{e=>update({P_s:(e.target.value)})}" type=number> hPa Saturated Pressure H<sub>2</sub>O<br>
-    <input bind:value="{P_a}" on:input on:input="{e=>update({P_a:(e.target.value)})}" type=number> hPa Atmospheric Pressure
-</div>
+	let dispatch = createEventDispatcher();
+
+	//dewpoint
+	export let tempC;
+	export let dewpointC=0;
+	let P_a = Physics.StdAtmosphere;
+	export let P_w;
+	let P_s;
+	let relativeHumidity;
+	let absoluteHumidity;
+    let humidityRatio;
+
+	$: relativeHumidity = Physics.RHFromDewpoint(tempC, dewpointC);
+	$: P_s = Physics.SaturationPressure(tempC);
+	$: P_w = Physics.PressureFromDewpoint(tempC, dewpointC);
+	$: absoluteHumidity = Physics.AbsoluteHumidity(tempC, P_w, P_a);
+	$: humidityRatio = Physics.HumidityRatio(P_w, P_a);
+
+	function updateRH(evt) {
+		relativeHumidity = +evt.target.value;
+		dewpointC = Physics.DewpointFromRH(tempC, relativeHumidity);
+		P_w = Physics.PressureFromRH(tempC, relativeHumidity);
+		dispatch('update', {P_w});
+	}
+	function updateDewpoint(evt) {
+		dewpointC = evt.detail.c;
+		dispatch('update', {P_w});
+	}
+	export function constantPressure(P) {
+		P_w = P;
+		dewpointC = Physics.DewpointFromPressure(tempC, P_w);
+	}
+</script>
 
 <style>
 	input {
@@ -15,42 +43,13 @@
 	}
 </style>
 
-<script>
-	import { createEventDispatcher } from 'svelte';
-	const dispatch = createEventDispatcher();
-	import TempConvert from './Temperature.svelte';
-	import * as Physics from '../../lib/physics.js';
-	export let dewpoint;
-	 let rh;
-	let ah;
-    let H;
-	 let P_w;
-	export let P_s;
-	export let P_a;
-	export let tempC;
-	export function update(opts) {
-		opts ??= {};
-		P_s = Physics.SaturationPressure(tempC);
-		if (opts.dewpoint != null) {
-			dewpoint = opts.dewpoint;
-			P_w = Physics.PressureFromDewpoint(tempC, opts.dewpoint);
-			rh = Physics.RHFromDewpoint(tempC, opts.dewpoint);
-			H = Physics.HumidityRatio(P_w,P_a);
-			ah = Physics.AbsoluteHumidity(tempC,P_w,P_a);
-			dispatch('update',{dewpoint});
-		} else if (opts.rh != null) {
-			rh = opts.rh;
-			P_w = Physics.PressureFromRH(tempC, opts.rh);
-			dewpoint = Physics.DewpointFromRH(opts.rh);
-			H = Physics.HumidityRatio(P_w,P_a);
-			ah = Physics.AbsoluteHumidity(tempC,P_w,P_a);
-			dispatch('update',{rh});
-		} else {
-			P_w = Physics.PressureFromDewpoint(tempC, dewpoint);
-			rh = Physics.RHFromDewpoint(tempC, dewpoint);
-			H = Physics.HumidityRatio(P_w,P_a);
-			ah = Physics.AbsoluteHumidity(tempC,P_w,P_a);
-		}
-	}
-
-</script>
+<div>
+	Dewpoint/Frostpoint<br>
+	<Temp bind:c={dewpointC} on:temp={updateDewpoint}/><br>
+	<input type=number value={relativeHumidity} on:input="{updateRH}"> % Relative Humidity =<br>
+	<input type=number disabled value="{(1e3*absoluteHumidity)}"> g/m^3 Absolute Humidity =<br>
+	<input type=number disabled value="{(100*humidityRatio)}"> % Humidity Ratio (mass H<sub>2</sub>O:total airmass)<br>
+	<input type=number value="{P_a}"> hPa Atmospheric Pressure<br>
+	<input type=number value="{P_s}"> hPa Saturation Pressure H<sub>2</sub>O<br>
+	<input type=number value="{P_w}"> hPa Partial Pressure H<sub>2</sub>O<br>
+</div>

@@ -3,9 +3,9 @@
 	import Params from './Params.svelte';
 	let params1,params2;
 	let constantPressure=true;
-	function update(params) {
+	function update1({detail:{P_w}}) {
 		if (constantPressure) {
-			params2.constantPressure(params.P_w, params.P_s, params.P_a);
+			params2.constantPressure(P_w);
 		}
 	}
 </script>
@@ -51,7 +51,7 @@
 </style>
 
 <main>
-	<div><Params bind:this={params1} on:update={e=>update(e.detail)}/></div>
+	<div><Params bind:this={params1} on:update={update1}/></div>
 	<div><input type=checkbox bind:checked={constantPressure}>Constant Pressure</div>
 	<div><Params bind:this={params2} /></div>
 </main>
