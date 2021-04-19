@@ -2,10 +2,10 @@
 <script>
 	import Params from './Params.svelte';
 	let params1,params2;
-	let constantPressure=true;
+	let fixedPressure=true;
 	function update1({detail:{P_w}}) {
-		if (constantPressure) {
-			params2.constantPressure(P_w);
+		if (fixedPressure) {
+			params2.fixedPressure(P_w);
 		}
 	}
 	function Metar(s) {
@@ -62,6 +62,6 @@
 
 <main>
 	<div><Params bind:this={params1} on:update={update1}/></div>
-	<div><input type=checkbox bind:checked={constantPressure}>Constant Pressure</div>
+	<div><input type=checkbox bind:checked={fixedPressure}>Fixed Pressure</div>
 	<div><Params bind:this={params2} /></div>
 </main>
