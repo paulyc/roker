@@ -30,7 +30,6 @@ const {
 	HumidityRatio,
 	SaturationPressure,
 	SpecificEnthalpyAir,
-	SpecificEnthalpyH2O_l,
 	DensityAir_H,
 	DensityAir,
 	DensityDryAir,
@@ -80,7 +79,7 @@ function TestDensity() {
 
 function TestEnthalpy() {
 	// SpecificEnthalpyAir saturated at 25 c should be about 76.09 kJ/kg
-	assert.strictEqual(SpecificEnthalpyH2O_l(0).toFixed(0),"2501");
+	//assert.strictEqual(SpecificEnthalpyH2O(0,0,StdAtmosphere)+'',"2501");
 	assert.strictEqual(SaturationPressure(25).toFixed(0),"32");
 	assert.strictEqual(SpecificEnthalpyAir(25,SaturationPressure(25),StdAtmosphere).toFixed(0),"76");
 	assert.strictEqual(SpecificEnthalpyDryAir(25).toFixed(0), "25");
