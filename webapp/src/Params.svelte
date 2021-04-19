@@ -49,27 +49,25 @@ export function fixedPressure(P_w_fixed) {
 
 <fieldset>
     <legend>params</legend>
-    <ul>
-        <li>
-            Temperature<br>
-            <Temp c={T} on:temp="{updateTemp}"/>
-        </li>
-        <li>
-            Humidity<br>
-            <Humidity bind:this={humidity} tempC={T} bind:P_w bind:P_a />
-        </li>
-        <li>
-	        <input value={h_dry_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Dry Air)<br>
-	        <input value={h_sat_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Saturated Air)<br>
-            <input value={h_h2o} on:input type=number step=0.01> kJ/kg Specific Enthalpy (H<sub>2</sub>O/Latent)<br>
-            <input value={h_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy<br>
-        </li>
-        <li>
-            <input type=number step=0.01 value={density}>Density (kg/m^3)<br>
-            <input type=number step=0.01 value={O2pressure}>hPa Partial Pressure O<sub>2</sub><br>
-            <input type=number step=0.01 value={100*O2volratio}>% O<sub>2</sub> (Volume)<br>
-            <input type=number step=0.01 value={100*O2massratio}>% O<sub>2</sub> (Mass)<br>
-            <input type=number step=0.01 value={1000*O2absolute}>g/m^3 Absolute Density O<sub>2</sub><br>
-        </li>
-    </ul>
+    <Temp c={T} on:temp="{updateTemp}"><legend>Temperature</legend></Temp>
+    <Humidity bind:this={humidity} tempC={T} bind:P_w bind:P_a />
+    <fieldset>
+        <legend>Enthalpy</legend>
+        <details>
+            <label><input value={h_dry_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Dry Air)</label>
+            <label><input value={h_sat_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Saturated Air)</label>
+            <label><input value={h_h2o} on:input type=number step=0.01> kJ/kg Specific Enthalpy (H<sub>2</sub>O/Latent)</label>
+            <label><input value={h_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy</label>
+        </details>
+    </fieldset>
+    <fieldset>
+        <legend>Pressure/Density</legend>
+        <details>
+            <label><input type=number step=0.01 value={density}>Density (kg/m<sup>3</sup>)</label>
+            <label><input type=number step=0.01 value={O2pressure}>hPa Partial Pressure O<sub>2</sub></label>
+            <label><input type=number step=0.01 value={100*O2volratio}>% O<sub>2</sub> (Volume)</label>
+            <label><input type=number step=0.01 value={100*O2massratio}>% O<sub>2</sub> (Mass)</label>
+            <label><input type=number step=0.01 value={1000*O2absolute}>g/m^3 Absolute Density O<sub>2</sub></label>
+        </details>
+    </fieldset>
 </fieldset>

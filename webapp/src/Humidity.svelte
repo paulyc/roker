@@ -47,13 +47,15 @@
 	}
 </style>
 
-<div>
-	Dewpoint/Frostpoint<br>
-	<Temp bind:c={dewpointC} on:temp={updateDewpoint}/><br>
-	<input step=0.1 type=number value={relativeHumidity} on:input="{updateRH}"> % Relative Humidity =<br>
-	<input step=0.0001 type=number value="{(1e3*absoluteHumidity)}"> g/m^3 Absolute Humidity =<br>
-	<input step=0.0001 type=number value="{(100*humidityRatio)}"> % Humidity Ratio (mass H<sub>2</sub>O:total airmass)<br>
-	<input step=0.01 type=number value="{P_a}" on:input={updateAtmosphericPressure}> hPa Atmospheric Pressure<br>
-	<input step=0.01 type=number value="{P_s}"> hPa Saturation Pressure H<sub>2</sub>O<br>
-	<input step=0.01 type=number value="{P_w}"> hPa Partial Pressure H<sub>2</sub>O<br>
-</div>
+<fieldset>
+	<legend>Humidity</legend>
+	<Temp bind:c={dewpointC} on:temp={updateDewpoint} id=tempctl><legend>Dewpoint/Frostpoint</legend></Temp>
+	<label><input step=0.1 type=number value={relativeHumidity} on:input="{updateRH}"> % Relative Humidity</label>
+	<details><fieldset>
+		<label><input step=0.0001 type=number value="{(1e3*absoluteHumidity)}"> g/m<sup>3</sup> Absolute Humidity</label>
+		<label><input step=0.0001 type=number value="{(100*humidityRatio)}"> % Humidity Ratio (mass H<sub>2</sub>O:total airmass)</label>
+		<label><input step=0.01 type=number value="{P_a}" on:input={updateAtmosphericPressure}> hPa Atmospheric Pressure</label>
+		<label><input step=0.01 type=number value="{P_s}"> hPa Saturation Pressure H<sub>2</sub>O</label>
+		<label><input step=0.01 type=number value="{P_w}"> hPa Partial Pressure H<sub>2</sub>O</label>
+	</fieldset></details>
+</fieldset>

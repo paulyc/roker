@@ -35,10 +35,14 @@
 	input {
 		width: 5em;
 	}
+	label {
+		display: inline;
+	}
 </style>
 
-<div>
-	<input type=number step=0.1 value={c} on:input="{inputC}"> °C
-=	<input type=number step=0.1 value={f} on:input="{inputF}"> °F
-=	<input type=number step=0.1 value={k} on:input="{inputK}"> K
-</div>
+<fieldset>
+	<slot></slot>
+	<label><input type=number step=0.1 value={c} on:input="{inputC}">°C</label>
+	<label>=<input type=number step=0.1 value={f} on:input="{inputF}">°F</label>
+	<label>=<input type=number step=0.1 value={k} on:input="{inputK}">K</label>
+</fieldset>
