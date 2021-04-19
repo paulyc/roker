@@ -8,7 +8,8 @@
 	export let c;
 	let f;
 	let k;
-	inputC({target:{value:c}});
+
+	$: inputC({target:{value:c}});
 
 	function inputC({target:{value}}) {
 		c = +value;
