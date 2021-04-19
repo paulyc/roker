@@ -22,7 +22,7 @@
 	$: humidityRatio = Physics.HumidityRatio(P_w, P_a);
 
 	function updateRH(evt) {
-		relativeHumidity = +evt.target.value;
+		relativeHumidity = evt.target.value;
 		dewpointC = Physics.DewpointFromRH(tempC, relativeHumidity);
 		P_w = Physics.PressureFromRH(tempC, relativeHumidity);
 		dispatch('update', {P_w});
@@ -32,7 +32,7 @@
 		dispatch('update', {P_w});
 	}
 	function updateAtmosphericPressure(evt) {
-		P_a = +evt.target.value;
+		P_a = evt.target.value;
 		dispatch('update',{P_a});
 	}
 	export function fixedPressure(P) {

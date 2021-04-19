@@ -11,7 +11,7 @@ let P_a=Physics.StdAtmosphere;
 let P_w=Physics.PressureFromDewpoint(T,0);
 let humidity;
 let h_air,h_dry_air,h_sat_air,h_h2o;
-let density,O2pressure,O2ratio,O2absolute;
+let density,O2pressure,O2volratio,O2massratio,O2absolute;
 
 
 $:  h_air = Physics.SpecificEnthalpyAir(T,P_w,P_a);
@@ -21,7 +21,8 @@ $:  h_h2o = Physics.SpecificEnthalpyH2O(T,P_w,P_a);
 
 $: density=Physics.DensityAir(T,P_w,P_a);
 $: O2pressure=Physics.PartialPressure('O2',P_w,P_a);
-$: O2ratio=Physics.MassRatio('O2',T,P_w,P_a);
+$: O2volratio = Physics.VolumeRatio('O2',P_w,P_a);
+$: O2massratio=Physics.MassRatio('O2',T,P_w,P_a);
 $: O2absolute=Physics.AbsoluteMass('O2',T,P_w,P_a);
 
 $:  dispatch('update',{
@@ -66,7 +67,8 @@ export function fixedPressure(P_w_fixed) {
         <li>
             <input type=number step=0.01 value={density}>Density (kg/m^3)<br>
             <input type=number step=0.01 value={O2pressure}>hPa Partial Pressure O<sub>2</sub><br>
-            <input type=number step=0.01 value={100*O2ratio}>% O<sub>2</sub> Ratio<br>
+            <input type=number step=0.01 value={100*O2volratio}>% O<sub>2</sub> (Volume)<br>
+            <input type=number step=0.01 value={100*O2massratio}>% O<sub>2</sub> (Mass)<br>
             <input type=number step=0.01 value={1000*O2absolute}>g/m^3 Absolute Density O<sub>2</sub><br>
         </li>
     </ul>
