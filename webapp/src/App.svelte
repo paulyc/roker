@@ -8,6 +8,16 @@
 			params2.constantPressure(P_w);
 		}
 	}
+	function Metar(s) {
+		this.parse(s);
+	}
+	Metar.prototype.parse = function (str) {
+		//while (str)
+	};
+
+	function getLatestMetar(station) {
+		const url = `https://aviationweather.gov/metar/data?ids=${station.toUpperCase()}&format=raw&date=&hours=0`;
+	}
 </script>
 
 <style>

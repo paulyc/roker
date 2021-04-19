@@ -8,17 +8,26 @@
 	export let c;
 	let f;
 	let k;
+	inputC({target:{value:c}});
 
-	let cString,fString,kString;
-
-	$: cString = c.toString();//.toFixed(1);
-	$: fString = f.toString();//.toFixed(1);
-	$: kString = k.toString();//.toFixed(1);
-
-	$: dispatch('temp', {c,f,k});
-	$:	k = Physics.DegreesCtoK(c);
-	$:	f = Physics.DegreesCtoF(c);
-
+	function inputC({target:{value}}) {
+		c = +value;
+		f = Physics.DegreesCtoF(c);
+		k = Physics.DegreesCtoK(c);
+		dispatch('temp', {c,f,k});
+	}
+	function inputF({target:{value}}) {
+		f = +value;
+		c = Physics.DegreesFtoC(f);
+		k = Physics.DegreesCtoK(c);
+		dispatch('temp', {c,f,k});
+	}
+	function inputK({target:{value}}) {
+		k = +value;
+		c = Physics.DegreesKtoC(k);
+		f = Physics.DegreesCtoF(c);
+		dispatch('temp', {c,f,k});
+	}
 </script>
 
 <style>
@@ -28,7 +37,7 @@
 </style>
 
 <div>
-	<input type=number value={cString} on:input="{e => c=+e.target.value}"> °C =
-	<input type=number value={fString} on:input="{e => c=Physics.DegreesFtoC(+e.target.value)}"> °F =
-	<input type=number value={kString} on:input="{e => c=Physics.DegreesKtoC(+e.target.value)}"> K
+	<input type=number step=0.1 value={c} on:input="{inputC}"> °C
+=	<input type=number step=0.1 value={f} on:input="{inputF}"> °F
+=	<input type=number step=0.1 value={k} on:input="{inputK}"> K
 </div>

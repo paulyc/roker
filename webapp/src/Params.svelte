@@ -5,7 +5,7 @@ import * as Physics from '../../lib/physics.js';
 import {createEventDispatcher} from 'svelte';
 const dispatch = createEventDispatcher();
 
-let T = 0;
+let T = 25;
 let P_s=Physics.SaturationPressure(T);
 let P_a=Physics.StdAtmosphere;
 let P_w=Physics.PressureFromDewpoint(T,0);
