@@ -28,15 +28,16 @@ $: O2absolute=Physics.AbsoluteMass('O2',T,P_w,P_a);
 $:  dispatch('update',{
         T,
         P_w,P_s,P_a,
-        h_air,h_dry_air,h_sat_air,h_h2o
+        h_air,h_dry_air,h_sat_air,h_h2o,
+        density,O2pressure,O2volratio,O2massratio,O2absolute
     });
 
 function updateTemp(evt) {
-    T = +evt.detail.c;
+    T = evt.detail.c;
 }
 
 export function fixedPressure(P_w_fixed) {
-    humidity.fixedPressure(P_w_fixed);
+    humidity.updatePartialPressure(P_w_fixed);
 }
 
 </script>
@@ -63,11 +64,11 @@ export function fixedPressure(P_w_fixed) {
     <fieldset>
         <legend>Pressure/Density</legend>
         <details>
-            <label><input type=number step=0.01 value={density}>Density (kg/m<sup>3</sup>)</label>
+            <label><input type=number step=0.01 value={density}>Air Density (kg/m<sup>3</sup>)</label>
             <label><input type=number step=0.01 value={O2pressure}>hPa Partial Pressure O<sub>2</sub></label>
+            <label><input type=number step=0.01 value={1000*O2absolute}>g/m<sup>3</sup> Absolute Density O<sub>2</sub></label>
             <label><input type=number step=0.01 value={100*O2volratio}>% O<sub>2</sub> (Volume)</label>
             <label><input type=number step=0.01 value={100*O2massratio}>% O<sub>2</sub> (Mass)</label>
-            <label><input type=number step=0.01 value={1000*O2absolute}>g/m^3 Absolute Density O<sub>2</sub></label>
         </details>
     </fieldset>
 </fieldset>
