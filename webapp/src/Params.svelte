@@ -14,6 +14,7 @@ let h_air,h_dry_air,h_sat_air,h_h2o;
 let density,O2pressure,O2volratio,O2massratio,O2absolute;
 let elecpower=500;
 let mkcal=4000,mpower;
+let spower=2000;
 let joulesperkcal=4184;
 let secperday=86400;
 let airconsensible=11500,airconlatent=4400;//80f indoor 95f outdoor
@@ -22,7 +23,7 @@ let dollarsperkwh=0.12;
 let airconduty;
 let totalinput,totaloutput;
 $: mpower = mkcal*joulesperkcal/secperday;
-$: totalinput = elecpower+mpower;
+$: totalinput = elecpower+mpower+spower;
 $: totaloutput = airconsensible+airconlatent;
 $: airconduty = totalinput/totaloutput * 60;
 $: aircondailycost = 24/60 * (airconduty * airconpower) * dollarsperkwh/1000;
@@ -87,6 +88,7 @@ export function fixedPressure(P_w_fixed) {
     <fieldset>
         <legend>Heat</legend>
         <details>
+            <label><input type=number step=10 bind:value={spower}>W Solar Heating</label>
             <label><input type=number step=10 bind:value={elecpower}>W Electric Heating</label>
             <label><input type=number step=10 bind:value={mkcal}>kcal/day =<input type=number value={mpower}>W Mammalian Heating</label>
             <label><input type=number step=10 bind:value={totalinput}>W Total Input</label>
