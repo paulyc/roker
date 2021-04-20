@@ -64,11 +64,11 @@ export function fixedPressure(P_w_fixed) {
     <fieldset>
         <legend>Pressure/Density</legend>
         <details>
-            <label><input type=number step=0.01 value={density}>Air Density (kg/m<sup>3</sup>)</label>
+            <label><input type=number step=0.01 value={density}>kg/m<sup>3</sup> Air Density</label>
             <label><input type=number step=0.01 value={O2pressure}>hPa Partial Pressure O<sub>2</sub></label>
-            <label><input type=number step=0.01 value={1000*O2absolute}>g/m<sup>3</sup> Absolute Density O<sub>2</sub></label>
-            <label><input type=number step=0.01 value={100*O2volratio}>% O<sub>2</sub> (Volume)</label>
-            <label><input type=number step=0.01 value={100*O2massratio}>% O<sub>2</sub> (Mass)</label>
+            <label><input type=number step=0.0001 value={O2absolute}>kg/m<sup>3</sup> O<sub>2</sub> Density</label>
+            <label><input type=number step=0.01 value={100*O2volratio}>% O<sub>2</sub> Ratio (Volume)</label>
+            <label><input type=number step=0.01 value={100*O2massratio}>% O<sub>2</sub> Ratio (Mass)</label>
         </details>
     </fieldset>
 </fieldset>
