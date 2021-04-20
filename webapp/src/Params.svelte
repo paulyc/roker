@@ -12,7 +12,20 @@ let P_w=Physics.PressureFromDewpoint(T,0);
 let humidity;
 let h_air,h_dry_air,h_sat_air,h_h2o;
 let density,O2pressure,O2volratio,O2massratio,O2absolute;
-
+let elecpower=500;
+let mkcal=4000,mpower;
+let joulesperkcal=4184;
+let secperday=86400;
+let airconsensible=11500,airconlatent=4400;//80f indoor 95f outdoor
+let airconpower=4500;
+let dollarsperkwh=0.12;
+let airconduty;
+let totalinput,totaloutput;
+$: mpower = mkcal*joulesperkcal/secperday;
+$: totalinput = elecpower+mpower;
+$: totaloutput = airconsensible+airconlatent;
+$: airconduty = totalinput/totaloutput * 60;
+$: aircondailycost = 24/60 * (airconduty * airconpower) * dollarsperkwh/1000;
 
 $:  h_air = Physics.SpecificEnthalpyAir(T,P_w,P_a);
 $:  h_dry_air = Physics.SpecificEnthalpyDryAir(T,P_a);
@@ -21,8 +34,8 @@ $:  h_h2o = Physics.SpecificEnthalpyH2O(T,P_w,P_a);
 
 $: density=Physics.DensityAir(T,P_w,P_a);
 $: O2pressure=Physics.PartialPressure('O2',P_w,P_a);
-$: O2volratio = Physics.VolumeRatio('O2',P_w,P_a);
-$: O2massratio=Physics.MassRatio('O2',T,P_w,P_a);
+$: O2volratio=100*Physics.VolumeRatio('O2',P_w,P_a);
+$: O2massratio=100*Physics.MassRatio('O2',T,P_w,P_a);
 $: O2absolute=Physics.AbsoluteMass('O2',T,P_w,P_a);
 
 $:  dispatch('update',{
@@ -55,20 +68,34 @@ export function fixedPressure(P_w_fixed) {
     <fieldset>
         <legend>Enthalpy</legend>
         <details>
-            <label><input value={h_dry_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Dry Air)</label>
-            <label><input value={h_sat_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Saturated Air)</label>
-            <label><input value={h_h2o} on:input type=number step=0.01> kJ/kg Specific Enthalpy (H<sub>2</sub>O/Latent)</label>
-            <label><input value={h_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy</label>
+            <label><input bind:value={h_dry_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Dry Air)</label>
+            <label><input bind:value={h_sat_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Saturated Air)</label>
+            <label><input bind:value={h_h2o} on:input type=number step=0.01> kJ/kg Specific Enthalpy (H<sub>2</sub>O/Latent)</label>
+            <label><input bind:value={h_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy</label>
         </details>
     </fieldset>
     <fieldset>
         <legend>Pressure/Density</legend>
         <details>
-            <label><input type=number step=0.01 value={density}>kg/m<sup>3</sup> Air Density</label>
-            <label><input type=number step=0.01 value={O2pressure}>hPa Partial Pressure O<sub>2</sub></label>
-            <label><input type=number step=0.0001 value={O2absolute}>kg/m<sup>3</sup> O<sub>2</sub> Density</label>
-            <label><input type=number step=0.01 value={100*O2volratio}>% O<sub>2</sub> Ratio (Volume)</label>
-            <label><input type=number step=0.01 value={100*O2massratio}>% O<sub>2</sub> Ratio (Mass)</label>
+            <label><input type=number step=0.01 bind:value={density}>kg/m<sup>3</sup> Air Density</label>
+            <label><input type=number step=0.01 bind:value={O2pressure}>hPa Partial Pressure O<sub>2</sub></label>
+            <label><input type=number step=0.0001 bind:value={O2absolute}>kg/m<sup>3</sup> O<sub>2</sub> Density</label>
+            <label><input type=number step=0.01 bind:value={O2volratio}>% O<sub>2</sub> Ratio (Volume)</label>
+            <label><input type=number step=0.01 bind:value={O2massratio}>% O<sub>2</sub> Ratio (Mass)</label>
+        </details>
+    </fieldset>
+    <fieldset>
+        <legend>Heat</legend>
+        <details>
+            <label><input type=number step=10 bind:value={elecpower}>W Electric Heating</label>
+            <label><input type=number step=10 bind:value={mkcal}>kcal/day =<input type=number value={mpower}>W Mammalian Heating</label>
+            <label><input type=number step=10 bind:value={totalinput}>W Total Input</label>
+            <label><input type=number step=10 bind:value={airconsensible}>W AC Sensible</label>
+            <label><input type=number step=10 bind:value={airconlatent}>W AC Latent</label>
+            <label><input type=number step=10 bind:value={totaloutput}>W Total Output</label>
+            <label><input type=number step=0.1 bind:value={airconduty}>min/h AC Duty Cycle</label>
+            <label><input type=number step=0.001 bind:value={dollarsperkwh}>$/kWh Electricity Cost</label>
+            <label><input type=number step=0.01 bind:value={aircondailycost}>$ AC Daily Cost</label>
         </details>
     </fieldset>
 </fieldset>

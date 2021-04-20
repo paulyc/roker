@@ -49,7 +49,7 @@
 
 <fieldset>
 	<legend>Humidity</legend>
-	<Temp bind:c={dewpointC} on:temp={updateDewpoint} id=tempctl><legend>Dewpoint/Frostpoint</legend></Temp>
+	<Temp bind:c={dewpointC} on:temp={updateDewpoint}><legend>Dewpoint/Frostpoint</legend></Temp>
 	<label><input step=0.1 type=number value={relativeHumidity} on:input="{updateRH}"> % Relative Humidity</label>
 	<label><input step=0.01 type=number value="{P_a}" on:input={updateAtmosphericPressure}> hPa Atmospheric Pressure</label>
 	<details><fieldset>
