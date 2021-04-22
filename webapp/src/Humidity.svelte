@@ -8,14 +8,19 @@
 	//dewpoint
 	export let tempC;
 	export let dewpointC=0;
-	export let P_a = Physics.StdAtmosphere;
+	export let P_a;
 	export let P_w;
+	let P_sl = Physics.StdAtmosphere;
+	let P_a_alt;
 	let P_s;
 	let relativeHumidity;
 	let absoluteHumidity;
     let humidityRatio;
+	let altitude=0;
 
 	$: relativeHumidity = Physics.RHFromDewpoint(tempC, dewpointC);
+	$: P_a_alt = Physics.AltitudePressureCoeff(altitude, tempC); // ?? cant be right
+	$: P_a = P_sl;
 	$: P_s = Physics.SaturationPressure(tempC);
 	$: P_w = Physics.PressureFromDewpoint(tempC, dewpointC);
 	$: absoluteHumidity = Physics.AbsoluteHumidity(tempC, P_w, P_a);
@@ -32,7 +37,7 @@
 		dispatch('update', {P_w});
 	}
 	function updateAtmosphericPressure(evt) {
-		P_a = evt.target.value;
+		P_sl = evt.target.value;
 		dispatch('update',{P_a});
 	}
 	export function updatePartialPressure(P) {
@@ -51,7 +56,8 @@
 	<legend>Humidity</legend>
 	<Temp bind:c={dewpointC} on:temp={updateDewpoint}><legend>Dewpoint/Frostpoint</legend></Temp>
 	<label><input step=0.1 type=number value={relativeHumidity} on:input="{updateRH}"> % Relative Humidity</label>
-	<label><input step=0.01 type=number value="{P_a}" on:input={updateAtmosphericPressure}> hPa Atmospheric Pressure</label>
+	<label><input step=0.1 type=number value="{P_a}" on:input={updateAtmosphericPressure}> hPa Atmospheric Pressure</label>
+	<!--label><input step=1 type=number bind:value={altitude}> m Altitude =<input step=0.01 type=number value={P_a_alt} disabled> hPa Atmospheric Pressure (At Altitude)</label-->
 	<details><fieldset>
 		<label><input step=0.0001 type=number value="{(1e3*absoluteHumidity)}"> g/m<sup>3</sup> Absolute Humidity</label>
 		<label><input step=0.0001 type=number value="{(100*humidityRatio)}"> % Humidity Ratio (mass H<sub>2</sub>O:total airmass)</label>
