@@ -5,12 +5,10 @@ import * as Physics from '../../lib/physics.js';
 import {createEventDispatcher} from 'svelte';
 const dispatch = createEventDispatcher();
 
-let T = 25;
-let P_a;
-let P_w;
-let humidity;
+let T = 25,humidity;
+let P_a,P_w;
 let h_air,h_dry_air,h_sat_air,h_h2o;
-let density,O2pressure,O2volratio,O2massratio,O2absolute;
+let density,O2pressure,CO2pressure,O2volratio,O2massratio,O2absolute,CO2absolute;
 let elecpower=500;
 let mkcal=4000,mpower,molatp,molo2,masso2;
 let spower=2000;
@@ -23,6 +21,7 @@ let kcalpermolatp=7.3;
 let masso2perkcalperday=1.1;//grams O2 per kcal/day energy
 let airconduty;
 let totalinput,totaloutput;
+
 $: mpower = mkcal*joulesperkcal/secperday;
 $: molatp = mkcal/kcalpermolatp;
 $: molo2 = molatp/4;
@@ -39,9 +38,11 @@ $:  h_h2o = Physics.SpecificEnthalpyH2O(T,P_w,P_a);
 
 $: density=Physics.DensityAir(T,P_w,P_a);
 $: O2pressure=Physics.PartialPressure('O2',P_w,P_a);
+$: CO2pressure=100*Physics.PartialPressure('CO2',P_w,P_a);
 $: O2volratio=100*Physics.VolumeRatio('O2',P_w,P_a);
 $: O2massratio=100*Physics.MassRatio('O2',T,P_w,P_a);
 $: O2absolute=1000*Physics.AbsoluteMass('O2',T,P_w,P_a); //grams
+$: CO2absolute=1000000*Physics.AbsoluteMass('CO2',T,P_w,P_a); //milligrams
 
 $:  dispatch('update',{
         T,
@@ -85,8 +86,10 @@ export function fixedPressure(P_w_fixed) {
         <legend>Pressure/Density</legend>
         <details>
             <label><input type=number step=0.01 bind:value={density}>kg/m<sup>3</sup> Air Density</label>
-            <label><input type=number step=0.01 bind:value={O2pressure}>hPa Partial Pressure O<sub>2</sub></label>
+            <label><input type=number step=1 bind:value={O2pressure}>hPa Partial Pressure O<sub>2</sub></label>
+            <label><input type=number step=1 bind:value={CO2pressure}>Pa Partial Pressure CO<sub>2</sub></label>
             <label><input type=number step=1 bind:value={O2absolute}>g/m<sup>3</sup> O<sub>2</sub> Density</label>
+            <label><input type=number step=1 bind:value={CO2absolute}>mg/m<sup>3</sup> CO<sub>2</sub> Density</label>
             <label><input type=number step=0.01 bind:value={O2volratio}>% O<sub>2</sub> Ratio (Volume)</label>
             <label><input type=number step=0.01 bind:value={O2massratio}>% O<sub>2</sub> Ratio (Mass)</label>
         </details>
