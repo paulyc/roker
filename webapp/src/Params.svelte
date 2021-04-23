@@ -78,6 +78,7 @@ export function fixedPressure(P_w_fixed) {
             <label><input bind:value={h_sat_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Saturated Air)</label>
             <label><input bind:value={h_h2o} on:input type=number step=0.01> kJ/kg Specific Enthalpy (H<sub>2</sub>O/Latent)</label>
             <label><input bind:value={h_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy</label>
+            <label><input value={h_air*density} on:input type=number step=0.01> kJ/m<sup>3</sup> Enthalpy Density</label>
         </details>
     </fieldset>
     <fieldset>
@@ -95,14 +96,16 @@ export function fixedPressure(P_w_fixed) {
         <details>
             <label><input type=number step=10 bind:value={spower}>W Solar Heating</label>
             <label><input type=number step=10 bind:value={elecpower}>W Electric Heating</label>
-            <label><input type=number step=10 bind:value={mkcal}>kcal/day =<input type=number value={mpower}>W Mammalian Heating</label>
+            <label><input type=number step=10 bind:value={mkcal}>kcal/day<br>=<input type=number value={mpower}>W Mammalian Heating<br>
+                (<input type=number value={molatp}>mol ATP/day=<input type=number value={masso2}>g O<sub>2</sub>/day<br>
+                =<input type=number value={masso2/O2absolute}>m<sup>3</sup>/day)</label>
             <label><input type=number step=10 bind:value={totalinput}>W Total Input</label>
             <label><input type=number step=10 bind:value={airconsensible}>W AC Sensible</label>
             <label><input type=number step=10 bind:value={airconlatent}>W AC Latent</label>
             <label><input type=number step=10 bind:value={totaloutput}>W Total Output</label>
-            <label><input type=number step=10 bind:value={airconpower}>W AC Power Consumption</label>
             <label><input type=number step=0.1 bind:value={airconduty}>min/h AC Duty Cycle</label>
             <label><input type=number step=0.001 bind:value={dollarsperkwh}>$/kWh Electricity Cost</label>
+            <label><input type=number step=10 bind:value={airconpower}>W AC Power Consumption</label>
             <label><input type=number step=0.01 bind:value={aircondailycost}>$ AC Daily Cost</label>
         </details>
     </fieldset>
