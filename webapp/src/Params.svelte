@@ -6,9 +6,8 @@ import {createEventDispatcher} from 'svelte';
 const dispatch = createEventDispatcher();
 
 let T = 25;
-let P_s=Physics.SaturationPressure(T);
-let P_a=Physics.StdAtmosphere;
-let P_w=Physics.PressureFromDewpoint(T,0);
+let P_a;
+let P_w;
 let humidity;
 let h_air,h_dry_air,h_sat_air,h_h2o;
 let density,O2pressure,O2volratio,O2massratio,O2absolute;
@@ -41,13 +40,14 @@ $: O2absolute=Physics.AbsoluteMass('O2',T,P_w,P_a);
 
 $:  dispatch('update',{
         T,
-        P_w,P_s,P_a,
+        P_w,P_a,
         h_air,h_dry_air,h_sat_air,h_h2o,
         density,O2pressure,O2volratio,O2massratio,O2absolute
     });
 
 function updateTemp(evt) {
     T = evt.detail.c;
+    humidity.updateTemp(T);
 }
 
 export function fixedPressure(P_w_fixed) {

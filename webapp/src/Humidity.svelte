@@ -6,19 +6,19 @@
 	let dispatch = createEventDispatcher();
 
 	//dewpoint
-	export let tempC;
-	export let dewpointC=0;
+	export let tempC=25;
+	export let dewpointC=20;
 	export let P_a;
 	export let P_w;
 	let P_sl = Physics.StdAtmosphere;
 	let P_a_alt;
 	let P_s;
-	let relativeHumidity;
+	let relativeHumidity=Physics.RHFromDewpoint(tempC, dewpointC);
 	let absoluteHumidity;
     let humidityRatio;
 	let altitude=0;
+	let debounce=0;
 
-	$: relativeHumidity = Physics.RHFromDewpoint(tempC, dewpointC);
 	$: P_a_alt = Physics.AltitudePressureCoeff(altitude, tempC); // ?? cant be right
 	$: P_a = P_sl;
 	$: P_s = Physics.SaturationPressure(tempC);
@@ -28,12 +28,17 @@
 
 	function updateRH(evt) {
 		relativeHumidity = evt.target.value;
+		debounce=Date.now();
+		setTimeout(() => {if (Date.now()-debounce>=900)debounce=0;}, 1000);
 		dewpointC = Physics.DewpointFromRH(tempC, relativeHumidity);
 		P_w = Physics.PressureFromRH(tempC, relativeHumidity);
 		dispatch('update', {P_w});
 	}
 	function updateDewpoint(evt) {
+		if (debounce)return;
 		dewpointC = evt.detail.c;
+		relativeHumidity = Physics.RHFromDewpoint(tempC, dewpointC);
+		P_w = Physics.PressureFromDewpoint(tempC, dewpointC);
 		dispatch('update', {P_w});
 	}
 	function updateAtmosphericPressure(evt) {
@@ -43,6 +48,10 @@
 	export function updatePartialPressure(P) {
 		P_w = P;
 		dewpointC = Physics.DewpointFromPressure(tempC, P_w);
+	}
+	export function updateTemp(T) {
+		tempC = T;
+		relativeHumidity = Physics.RHFromDewpoint(tempC, dewpointC);
 	}
 </script>
 
