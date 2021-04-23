@@ -12,16 +12,21 @@ let humidity;
 let h_air,h_dry_air,h_sat_air,h_h2o;
 let density,O2pressure,O2volratio,O2massratio,O2absolute;
 let elecpower=500;
-let mkcal=4000,mpower;
+let mkcal=4000,mpower,molatp,molo2,masso2;
 let spower=2000;
 let joulesperkcal=4184;
 let secperday=86400;
 let airconsensible=11500,airconlatent=4400;//80f indoor 95f outdoor
 let airconpower=4500;
 let dollarsperkwh=0.12;
+let kcalpermolatp=7.3;
+let masso2perkcalperday=1.1;//grams O2 per kcal/day energy
 let airconduty;
 let totalinput,totaloutput;
 $: mpower = mkcal*joulesperkcal/secperday;
+$: molatp = mkcal/kcalpermolatp;
+$: molo2 = molatp/4;
+$: masso2 = molo2*Physics.MolarMass.O2;//grams
 $: totalinput = elecpower+mpower+spower;
 $: totaloutput = airconsensible+airconlatent;
 $: airconduty = totalinput/totaloutput * 60;
@@ -36,7 +41,7 @@ $: density=Physics.DensityAir(T,P_w,P_a);
 $: O2pressure=Physics.PartialPressure('O2',P_w,P_a);
 $: O2volratio=100*Physics.VolumeRatio('O2',P_w,P_a);
 $: O2massratio=100*Physics.MassRatio('O2',T,P_w,P_a);
-$: O2absolute=Physics.AbsoluteMass('O2',T,P_w,P_a);
+$: O2absolute=1000*Physics.AbsoluteMass('O2',T,P_w,P_a); //grams
 
 $:  dispatch('update',{
         T,
@@ -80,7 +85,7 @@ export function fixedPressure(P_w_fixed) {
         <details>
             <label><input type=number step=0.01 bind:value={density}>kg/m<sup>3</sup> Air Density</label>
             <label><input type=number step=0.01 bind:value={O2pressure}>hPa Partial Pressure O<sub>2</sub></label>
-            <label><input type=number step=0.0001 bind:value={O2absolute}>kg/m<sup>3</sup> O<sub>2</sub> Density</label>
+            <label><input type=number step=1 bind:value={O2absolute}>g/m<sup>3</sup> O<sub>2</sub> Density</label>
             <label><input type=number step=0.01 bind:value={O2volratio}>% O<sub>2</sub> Ratio (Volume)</label>
             <label><input type=number step=0.01 bind:value={O2massratio}>% O<sub>2</sub> Ratio (Mass)</label>
         </details>
