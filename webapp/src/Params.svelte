@@ -3,9 +3,13 @@ import Temp from './Temp.svelte';
 import Humidity from './Humidity.svelte';
 import * as Physics from '../../lib/physics.js';
 import {createEventDispatcher} from 'svelte';
+import {writable} from 'svelte/store';
 const dispatch = createEventDispatcher();
 
-let T = 25,humidity;
+const tempC = writable(25);
+
+let T;
+let humidity;
 let P_a,P_w;
 let h_air,h_dry_air,h_sat_air,h_h2o;
 let density,O2pressure,CO2pressure,O2volratio,O2massratio,O2absolute,CO2absolute;
@@ -15,13 +19,14 @@ let spower=2000;
 let joulesperkcal=4184;
 let secperday=86400;
 let airconsensible=11500,airconlatent=4400;//80f indoor 95f outdoor
-let airconpower=4500;
+let airconpower=5000;
 let dollarsperkwh=0.12;
 let kcalpermolatp=7.3;
 let masso2perkcalperday=1.1;//grams O2 per kcal/day energy
 let airconduty;
 let totalinput,totaloutput;
 
+$: T=$tempC;
 $: mpower = mkcal*joulesperkcal/secperday;
 $: molatp = mkcal/kcalpermolatp;
 $: molo2 = molatp/4;
@@ -56,8 +61,10 @@ function updateTemp(evt) {
     humidity.updateTemp(T);
 }
 
-export function fixedPressure(P_w_fixed) {
+export function fixedPressure(P_w_fixed, P_a_fixed) {
+    P_a = P_a_fixed;
     humidity.updatePartialPressure(P_w_fixed);
+    humidity.updateAtmosphericPressure(P_a_fixed);
 }
 
 </script>
@@ -78,9 +85,9 @@ export function fixedPressure(P_w_fixed) {
             <label><input bind:value={h_dry_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Dry Air)</label>
             <label><input bind:value={h_sat_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Saturated Air)</label>
             <label><input bind:value={h_h2o} on:input type=number step=0.01> kJ/kg Specific Enthalpy (H<sub>2</sub>O/Latent)</label>
-            <label><input bind:value={h_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy</label>
             <label><input value={h_air*density} on:input type=number step=0.01> kJ/m<sup>3</sup> Enthalpy Density</label>
         </details>
+        <label><input bind:value={h_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy</label>
     </fieldset>
     <fieldset>
         <legend>Pressure/Density</legend>
@@ -88,11 +95,11 @@ export function fixedPressure(P_w_fixed) {
             <label><input type=number step=0.01 bind:value={density}>kg/m<sup>3</sup> Air Density</label>
             <label><input type=number step=1 bind:value={O2pressure}>hPa Partial Pressure O<sub>2</sub></label>
             <label><input type=number step=1 bind:value={CO2pressure}>Pa Partial Pressure CO<sub>2</sub></label>
-            <label><input type=number step=1 bind:value={O2absolute}>g/m<sup>3</sup> O<sub>2</sub> Density</label>
             <label><input type=number step=1 bind:value={CO2absolute}>mg/m<sup>3</sup> CO<sub>2</sub> Density</label>
             <label><input type=number step=0.01 bind:value={O2volratio}>% O<sub>2</sub> Ratio (Volume)</label>
             <label><input type=number step=0.01 bind:value={O2massratio}>% O<sub>2</sub> Ratio (Mass)</label>
         </details>
+        <label><input type=number step=1 bind:value={O2absolute}>g/m<sup>3</sup> O<sub>2</sub> Density</label>
     </fieldset>
     <fieldset>
         <legend>Heat</legend>

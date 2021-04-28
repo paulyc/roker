@@ -6,8 +6,8 @@
 	let dispatch = createEventDispatcher();
 
 	//dewpoint
-	export let tempC=25;
-	export let dewpointC=20;
+	export let tempC;
+	export let dewpointC=15;
 	export let P_a = Physics.StdAtmosphere;
 	export let P_w;
 	let P_sl = Physics.StdAtmosphere;
@@ -40,8 +40,8 @@
 		P_w = Physics.PressureFromDewpoint(tempC, dewpointC);
 		dispatch('update', {P_w});
 	}
-	function updateAtmosphericPressure(evt) {
-		P_sl = evt.target.value;
+	export function updateAtmosphericPressure(P) {
+		if (P!==void 0) P_sl=P;
 		P_a = P_sl;
 		dispatch('update',{P_a});
 	}
@@ -66,12 +66,12 @@
 	<legend>Humidity</legend>
 	<Temp bind:c={dewpointC} on:temp={updateDewpoint}><legend>Dewpoint/Frostpoint</legend></Temp>
 	<label><input step=0.1 type=number value={relativeHumidity} on:input="{updateRH}"> % Relative Humidity</label>
-	<label><input step=0.1 type=number bind:value="{P_sl}" on:input={updateAtmosphericPressure}> hPa Atmospheric Pressure</label>
+	<label><input step=0.1 type=number bind:value="{P_sl}" on:input={e=>updateAtmosphericPressure(e.target.value)}> hPa Atmospheric Pressure</label>
 	<!--label>At<input step=1 type=number bind:value={altitude}> m Altitude =<input step=0.01 type=number bind:value={P_a_alt} disabled> hPa Atmospheric Pressure</label-->
+	<label><input step=0.01 type=number value="{P_w}"> hPa Partial Pressure H<sub>2</sub>O</label>
 	<details><fieldset>
 		<label><input step=0.0001 type=number value="{(1e3*absoluteHumidity)}"> g/m<sup>3</sup> Absolute Humidity</label>
 		<label><input step=0.0001 type=number value="{(100*humidityRatio)}"> % Humidity Ratio (mass H<sub>2</sub>O:total airmass)</label>
 		<label><input step=0.01 type=number value="{P_s}"> hPa Saturation Pressure H<sub>2</sub>O</label>
-		<label><input step=0.01 type=number value="{P_w}"> hPa Partial Pressure H<sub>2</sub>O</label>
 	</fieldset></details>
-</fieldset>
+	</fieldset>
