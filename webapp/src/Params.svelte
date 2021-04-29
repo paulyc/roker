@@ -6,9 +6,7 @@ import {createEventDispatcher} from 'svelte';
 import {writable} from 'svelte/store';
 const dispatch = createEventDispatcher();
 
-const tempC = writable(25);
-
-let T;
+let T = 25;
 let humidity;
 let P_a,P_w;
 let h_air,h_dry_air,h_sat_air,h_h2o;
@@ -26,7 +24,6 @@ let masso2perkcalperday=1.1;//grams O2 per kcal/day energy
 let airconduty;
 let totalinput,totaloutput;
 
-$: T=$tempC;
 $: mpower = mkcal*joulesperkcal/secperday;
 $: molatp = mkcal/kcalpermolatp;
 $: molo2 = molatp/4;

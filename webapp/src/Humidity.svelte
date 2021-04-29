@@ -5,9 +5,8 @@
 
 	let dispatch = createEventDispatcher();
 
-	//dewpoint
 	export let tempC;
-	export let dewpointC=15;
+	export let dewpointC=20;
 	export let P_a = Physics.StdAtmosphere;
 	export let P_w;
 	let P_sl = Physics.StdAtmosphere;
@@ -64,7 +63,7 @@
 
 <fieldset>
 	<legend>Humidity</legend>
-	<Temp bind:c={dewpointC} on:temp={updateDewpoint}><legend>Dewpoint/Frostpoint</legend></Temp>
+	<Temp c={dewpointC} on:temp={updateDewpoint}><legend>Dewpoint/Frostpoint</legend></Temp>
 	<label><input step=0.1 type=number value={relativeHumidity} on:input="{updateRH}"> % Relative Humidity</label>
 	<label><input step=0.1 type=number bind:value="{P_sl}" on:input={e=>updateAtmosphericPressure(e.target.value)}> hPa Atmospheric Pressure</label>
 	<!--label>At<input step=1 type=number bind:value={altitude}> m Altitude =<input step=0.01 type=number bind:value={P_a_alt} disabled> hPa Atmospheric Pressure</label-->
