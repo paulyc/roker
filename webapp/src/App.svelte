@@ -63,6 +63,6 @@
 
 <main>
 	<div><Params bind:this={params1} on:update={update}/></div>
-	<div><input type=checkbox bind:checked={fixedPressure}>Fixed Pressure</div>
+	<p><input type=checkbox bind:checked={fixedPressure}>Fixed Pressure</p>
 	<div><Params bind:this={params2} /></div>
 </main>
