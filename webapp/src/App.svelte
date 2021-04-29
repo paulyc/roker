@@ -47,6 +47,7 @@
 		src: url(/OperatorNarrow-Book.woff2);
 	}
 	main {
+		display: flex;
 		font-family: 'Agave Nerd Font Mono';
 	}
 	div {
