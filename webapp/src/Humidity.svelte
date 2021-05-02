@@ -31,7 +31,6 @@
 
 	function updateRH(evt) {
 		if (debounce)return;
-		console.log(`updateRH(${JSON.stringify(evt)})`);
 		relativeHumidity = evt.target.value;
 		debounce=Date.now();
 		setTimeout(() => {if (Date.now()-debounce>=5)debounce=0;}, 5);
@@ -41,7 +40,6 @@
 	}
 	function updateDewpoint(evt) {
 		if (debounce)return;
-		console.log(`updateDewpoint(${JSON.stringify(evt)})`);
 		debounce=Date.now();
 		setTimeout(() => {if (Date.now()-debounce>=5)debounce=0;}, 5);
 		dewpointC = evt.detail.c;
@@ -50,7 +48,6 @@
 		dispatch('update', {P_w});
 	}
 	export function updateAtmosphericPressure(P) {
-		console.log(`updateAtmosphericPressure(${JSON.stringify(P)})`);
 		if (P) {
 			P_sl=P;
 			altitude=altitude;
@@ -58,13 +55,13 @@
 		dispatch('update',{P_a});
 	}
 	export function updatePartialPressure(P) {
-		console.log(`updatePartialPressure(${JSON.stringify(P)})`);
-		P_w = P;
+		if (P) {
+			P_w = P;
+		}
 		dewpointC = Physics.DewpointFromPressure(tempC, P_w);
 		relativeHumidity = Physics.RHFromDewpoint(tempC, dewpointC);
 	}
 	export function updateTemp(T) {
-		console.log(`updateTemp(${JSON.stringify(T)})`);
 		tempC = T;
 		relativeHumidity = Physics.RHFromDewpoint(tempC, dewpointC);
 	}
@@ -81,11 +78,11 @@
 	<Temp c={dewpointC} on:temp={updateDewpoint}><legend>Dewpoint/Frostpoint</legend></Temp>
 	<label><input step=0.1 type=number value={relativeHumidity} on:input="{updateRH}">% Relative Humidity</label>
 	<label><input step=0.1 type=number bind:value="{P_a}" on:input={updateAtmosphericPressure(void 0)}>hPa Atmospheric Pressure</label>
-	<label><input step=10 type=number bind:value={altitude}>m Altitude<!--input step=0.1 type=number bind:value={P_a_alt}>hPa Atmospheric Pressure--></label>
+	<label><input step=10 type=number bind:value={altitude}>m Altitude</label>
 	<label><input step=0.01 type=number value="{P_w}">hPa Partial Pressure H<sub>2</sub>O</label>
 	<details><fieldset>
-		<label><input step=0.0001 type=number value="{(1e3*absoluteHumidity)}"> g/m<sup>3</sup> Absolute Humidity</label>
-		<label><input step=0.0001 type=number value="{(100*humidityRatio)}"> % Humidity Ratio (mass H<sub>2</sub>O:total airmass)</label>
-		<label><input step=0.01 type=number value="{P_s}"> hPa Saturation Pressure H<sub>2</sub>O</label>
+		<label><input step=0.0001 type=number value="{(1e3*absoluteHumidity)}">g/m<sup>3</sup> Absolute Humidity</label>
+		<label><input step=0.0001 type=number value="{(100*humidityRatio)}">% Humidity Ratio (mass H<sub>2</sub>O:total airmass)</label>
+		<label><input step=0.01 type=number value="{P_s}">hPa Saturation Pressure H<sub>2</sub>O</label>
 	</fieldset></details>
 </fieldset>
