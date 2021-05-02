@@ -20,14 +20,15 @@
 // SOFTWARE.
 //
 
+const Test = require('./physics');
 const physics = require('./physics');
 const rhcalc = require('./rhcalc');
+const units = require('./units');
 
-function Test() {
+module.exports = function Test() {
     physics();
     rhcalc();
+    units();
 };
 
 Test();
-
-module.exports = Test;

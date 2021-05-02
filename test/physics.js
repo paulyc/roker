@@ -34,7 +34,11 @@ const {
 	DensityAir,
 	DensityDryAir,
 	DensityH2O_g,
+	AltitudePressureCoeff,
+	MolarMassAir,
+	MolarMass,
 } = require('../lib/physics');
+
 const assert = require('assert');
 const eq = assert.strictEqual;
 
@@ -44,6 +48,7 @@ function Test() {
 	TestCtoK();
 	TestDensity();
 	TestEnthalpy();
+	TestAltitudePressure();
 };
 
 module.exports = Test;
@@ -71,10 +76,21 @@ function TestCtoK() {
 }
 
 function TestDensity() {
-	eq(DensityDryAir(25,StdAtmosphere).toFixed(2),'1.18');
-	eq(DensityAir_H(HumidityRatio(30,StdAtmosphere),25,StdAtmosphere).toFixed(2), '1.17');
+	eq(DensityDryAir(25,StdAtmosphere).toFixed(2),
+	    '1.18');
+	eq(DensityAir_H(HumidityRatio(30,StdAtmosphere),25,StdAtmosphere).toFixed(2),
+	    '1.17');
 	eq( DensityAir_H(HumidityRatio(30,StdAtmosphere),25,StdAtmosphere).toFixed(2),
 	    DensityAir(25,30,StdAtmosphere).toFixed(2));
+}
+
+// Did not check these values for sure
+function TestAltitudePressure() {
+	eq(AltitudePressureCoeff(0,25).toFixed(1),'1.0');
+	eq(AltitudePressureCoeff(100,25).toFixed(3),'0.989');
+	eq(AltitudePressureCoeff(1000,25).toFixed(3),'0.892');
+	eq(AltitudePressureCoeff(10000,25).toFixed(3),'0.318');
+	eq(MolarMassAir.toFixed(2), MolarMass.Air.toFixed(2));
 }
 
 function TestEnthalpy() {

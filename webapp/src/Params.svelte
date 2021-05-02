@@ -37,6 +37,7 @@ $:  h_air = Physics.SpecificEnthalpyAir(T,P_w,P_a);
 $:  h_dry_air = Physics.SpecificEnthalpyDryAir(T,P_a);
 $:  h_sat_air = Physics.SpecificEnthalpySaturatedAir(T,P_a);
 $:  h_h2o = Physics.SpecificEnthalpyH2O(T,P_w,P_a);
+$:  h_density = h_air*density;
 
 $: density=Physics.DensityAir(T,P_w,P_a);
 $: O2pressure=Physics.PartialPressure('O2',P_w,P_a);
@@ -54,14 +55,19 @@ $:  dispatch('update',{
     });
 
 function updateTemp(evt) {
+    console.log(`updateTemp(${JSON.stringify(evt.detail)})`);
     T = evt.detail.c;
     humidity.updateTemp(T);
 }
 
-export function fixedPressure(P_w_fixed, P_a_fixed) {
-    P_a = P_a_fixed;
-    humidity.updatePartialPressure(P_w_fixed);
-    humidity.updateAtmosphericPressure(P_a_fixed);
+export function partialPressure(P) {
+    console.log(`partialPressure(${JSON.stringify(P)})`);
+    humidity.updatePartialPressure(P);
+}
+
+export function atmosphericPressure(P) {
+console.log(`atmosphericPressure(${JSON.stringify(P)})`);
+    humidity.updateAtmosphericPressure(P);
 }
 
 </script>
@@ -78,16 +84,17 @@ export function fixedPressure(P_w_fixed, P_a_fixed) {
     <Humidity bind:this={humidity} tempC={T} bind:P_w bind:P_a />
     <fieldset>
         <legend>Enthalpy</legend>
+        <label><input bind:value={h_air} on:input type=number step=0.01>kJ/kg Specific Enthalpy</label>
         <details>
-            <label><input bind:value={h_dry_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Dry Air)</label>
-            <label><input bind:value={h_sat_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy (Saturated Air)</label>
-            <label><input bind:value={h_h2o} on:input type=number step=0.01> kJ/kg Specific Enthalpy (H<sub>2</sub>O/Latent)</label>
-            <label><input value={h_air*density} on:input type=number step=0.01> kJ/m<sup>3</sup> Enthalpy Density</label>
+            <label><input bind:value={h_dry_air} on:input type=number step=0.01>kJ/kg Specific Enthalpy (Dry Air)</label>
+            <label><input bind:value={h_sat_air} on:input type=number step=0.01>kJ/kg Specific Enthalpy (Saturated Air)</label>
+            <label><input bind:value={h_h2o} on:input type=number step=0.01>kJ/kg Specific Enthalpy (H<sub>2</sub>O/Latent)</label>
+            <label><input bind:value={h_density} on:input type=number step=0.01>kJ/m<sup>3</sup> Enthalpy Density</label>
         </details>
-        <label><input bind:value={h_air} on:input type=number step=0.01> kJ/kg Specific Enthalpy</label>
     </fieldset>
     <fieldset>
         <legend>Pressure/Density</legend>
+        <label><input type=number step=1 bind:value={O2absolute}>g/m<sup>3</sup> O<sub>2</sub> Density</label>
         <details>
             <label><input type=number step=0.01 bind:value={density}>kg/m<sup>3</sup> Air Density</label>
             <label><input type=number step=1 bind:value={O2pressure}>hPa Partial Pressure O<sub>2</sub></label>
@@ -96,7 +103,6 @@ export function fixedPressure(P_w_fixed, P_a_fixed) {
             <label><input type=number step=0.01 bind:value={O2volratio}>% O<sub>2</sub> Ratio (Volume)</label>
             <label><input type=number step=0.01 bind:value={O2massratio}>% O<sub>2</sub> Ratio (Mass)</label>
         </details>
-        <label><input type=number step=1 bind:value={O2absolute}>g/m<sup>3</sup> O<sub>2</sub> Density</label>
     </fieldset>
     <fieldset>
         <legend>Heat</legend>

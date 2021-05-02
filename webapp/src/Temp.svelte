@@ -8,22 +8,28 @@
 	export let c;
 	let f;
 	let k;
+	let debounce = 0;
 
 	$: inputC({target:{value:c}});
 
 	function inputC({target:{value}}) {
+		if (debounce) return;
+		debounce=Date.now();
+		setTimeout(() => {if (Date.now()-debounce>=10)debounce=0;}, 10);
 		c = +value;
 		f = Physics.DegreesCtoF(c);
 		k = Physics.DegreesCtoK(c);
 		dispatch('temp', {c,f,k});
 	}
 	function inputF({target:{value}}) {
+		if (debounce) return;
 		f = +value;
 		c = Physics.DegreesFtoC(f);
 		k = Physics.DegreesCtoK(c);
 		dispatch('temp', {c,f,k});
 	}
 	function inputK({target:{value}}) {
+		if (debounce) return;
 		k = +value;
 		c = Physics.DegreesKtoC(k);
 		f = Physics.DegreesCtoF(c);

@@ -5,7 +5,8 @@
 	let fixedPressure=true;
 	function update({detail:{P_w,P_a}}) {
 		if (fixedPressure) {
-			params2.fixedPressure(P_w,P_a);
+			P_w && params2.partialPressure(P_w);
+			P_a && params2.atmosphericPressure(P_a);
 		}
 	}
 	function Metar(s) {
