@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/paulyc/roker#readme",
   "dependencies": {
-    "mathjs": "^7.2.0"
+    "mathjs": "^7.5.1"
   }
 }
