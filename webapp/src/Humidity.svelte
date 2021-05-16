@@ -15,7 +15,7 @@
 	let relativeHumidity=Physics.RHFromDewpoint(tempC, dewpointC);
 	let altCoeff;
 	let absoluteHumidity;
-    let humidityRatio;
+    let humidityRatio,mixingRatio;
 	let altitude=0;
 	let debounce=0;
 
@@ -26,6 +26,7 @@
 	$: P_w = Physics.PressureFromDewpoint(tempC, dewpointC)*altCoeff;
 	$: absoluteHumidity = Physics.AbsoluteHumidity(tempC, P_w, P_a);
 	$: humidityRatio = Physics.HumidityRatio(P_w, P_a);
+	$: mixingRatio = Physics.MixingRatio(tempC,P_w,P_a);
 //	$: dewpointC = Physics.DewpointFromPressure(tempC, P_w);
 //	$: relativeHumidity = Physics.RHFromPressure(tempC, P_w);
 
@@ -81,8 +82,9 @@
 	<label><input step=10 type=number bind:value={altitude}>m Altitude</label>
 	<label><input step=0.01 type=number value="{P_w}">hPa Partial Pressure H<sub>2</sub>O</label>
 	<details><fieldset>
-		<label><input step=0.0001 type=number value="{(1e3*absoluteHumidity)}">g/m<sup>3</sup> Absolute Humidity</label>
+		<label><input step=0.0001 type=number value="{(1e3*absoluteHumidity)}">g/m<sup>3</sup> Volumetric (Absolute) Humidity</label>
 		<label><input step=0.0001 type=number value="{(100*humidityRatio)}">% Humidity Ratio (mass H<sub>2</sub>O:total airmass)</label>
+		<label><input step=0.0001 type=number value="{(1000*mixingRatio)}">g/kg Specific Humidity (Mixing Ratio, mass H<sub>2</sub>O:mass dry air)</label>
 		<label><input step=0.01 type=number value="{P_s}">hPa Saturation Pressure H<sub>2</sub>O</label>
 	</fieldset></details>
 </fieldset>
