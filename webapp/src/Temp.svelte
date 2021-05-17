@@ -13,7 +13,7 @@
 	$: inputC({target:{value:c}});
 
 	function inputC({target:{value}}) {
-		if (debounce) return;
+		if (debounce||value==null) return;
 		debounce=Date.now();
 		setTimeout(() => {if (Date.now()-debounce>=10)debounce=0;}, 10);
 		c = +value;
@@ -22,14 +22,14 @@
 		dispatch('temp', {c,f,k});
 	}
 	function inputF({target:{value}}) {
-		if (debounce) return;
+		if (debounce||value==null) return;
 		f = +value;
 		c = Physics.DegreesFtoC(f);
 		k = Physics.DegreesCtoK(c);
 		dispatch('temp', {c,f,k});
 	}
 	function inputK({target:{value}}) {
-		if (debounce) return;
+		if (debounce||value==null) return;
 		k = +value;
 		c = Physics.DegreesKtoC(k);
 		f = Physics.DegreesCtoF(c);
