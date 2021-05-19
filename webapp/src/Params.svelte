@@ -9,7 +9,8 @@ const dispatch = createEventDispatcher();
 
 let T = 25;
 let humidity;
-let P_a,P_w;
+ let P_a=Physics.StdAtmosphere
+ let P_w;
 let h_air,h_dry_air,h_sat_air,h_h2o;
 let density,O2pressure,CO2pressure,O2volratio,O2massratio,O2absolute,CO2absolute;
 let elecpower=500;
@@ -55,17 +56,20 @@ $:  dispatch('update',{
         density,O2pressure,O2volratio,O2massratio,O2absolute
     });
 
-function updateTemp(evt) {
-    T = evt.detail.c;
+function updateTemp({detail:{c}}) {
+    if (c ==null) return;
+    T = c;
     humidity.updateTemp(T);
 }
 
-export function partialPressure(P) {
-    humidity.updatePartialPressure(P);
+export function partialPressure(P_w) {
+    humidity.updatePartialPressure(P_w);
+    //humidity.$set({P_w});
 }
 
-export function atmosphericPressure(P) {
-    humidity.updateAtmosphericPressure(P);
+export function atmosphericPressure(P_a) {
+    humidity.updateAtmosphericPressure(P_a);
+    //humidity.$set({P_a})
 }
 
 </script>

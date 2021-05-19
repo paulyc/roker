@@ -15,7 +15,7 @@
 	function inputC({target:{value}}) {
 		if (debounce||value==null) return;
 		debounce=Date.now();
-		setTimeout(() => {if (Date.now()-debounce>=10)debounce=0;}, 10);
+		setTimeout(() => {debounce=0;}, 10);
 		c = +value;
 		f = Physics.DegreesCtoF(c);
 		k = Physics.DegreesCtoK(c);
