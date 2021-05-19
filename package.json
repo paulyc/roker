@@ -15,8 +15,5 @@
   "bugs": {
     "url": "https://github.com/paulyc/roker/issues"
   },
-  "homepage": "https://github.com/paulyc/roker#readme",
-  "dependencies": {
-    "mathjs": "^7.2.0"
-  }
+  "homepage": "https://github.com/paulyc/roker#readme"
 }
