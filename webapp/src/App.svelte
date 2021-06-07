@@ -58,7 +58,7 @@
 	}
 	main {
 		display: flex;
-		font-family: 'Dank Mono Regular'; /*'Agave Nerd Font Mono';*/
+		font-family: /*'Dank Mono Regular';*/ 'Agave Nerd Font Mono';
 	}
 	div {
 		/*max-width: 40%;*/
