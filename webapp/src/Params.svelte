@@ -5,12 +5,12 @@ import * as Physics from '../../lib/physics.js';
 import {createEventDispatcher} from 'svelte';
 import {writable} from 'svelte/store';
 
-const dispatch = createEventDispatcher();
+//const dispatch = createEventDispatcher();
 
 let T = 25;
 let humidity;
- let P_a=Physics.StdAtmosphere
- let P_w;
+export let P_a;
+export let P_w;
 let h_air,h_dry_air,h_sat_air,h_h2o;
 let density,O2pressure,CO2pressure,O2volratio,O2massratio,O2absolute,CO2absolute;
 let elecpower=500;
@@ -48,14 +48,14 @@ $: O2volratio=100*Physics.VolumeRatio('O2',P_w,P_a);
 $: O2massratio=100*Physics.MassRatio('O2',P_w,P_a);
 $: O2absolute=1000*Physics.AbsoluteMass('O2',T,P_w,P_a); //grams
 $: CO2absolute=1000000*Physics.AbsoluteMass('CO2',T,P_w,P_a); //milligrams
-
+/*
 $:  dispatch('update',{
         T,
         P_w,P_a,
         h_air,h_dry_air,h_sat_air,h_h2o,
         density,O2pressure,O2volratio,O2massratio,O2absolute
     });
-
+*/
 function updateTemp({detail:{c}}) {
     if (c ==null) return;
     T = c;
