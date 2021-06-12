@@ -56,9 +56,15 @@
 		font-style: monospace;
 		src: url(/DankMono-Regular.ttf);
 	}
+	@font-face {
+		font-family: 'Aurulent Sans Mono';
+		font-style: monospace;
+		src: url(/AurulentSansMono.woff2);
+	}
 	main {
 		display: flex;
-		font-family: /*'Dank Mono Regular';*/ 'Agave Nerd Font Mono';
+		font-family: 'Aurulent Sans Mono';/* 'Agave Nerd Font Mono';*/
+		font-size: 10pt;
 	}
 	div {
 		/*max-width: 40%;*/
