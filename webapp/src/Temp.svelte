@@ -48,7 +48,7 @@
 
 <fieldset>
 	<slot></slot>
-	<label><input type=number step=0.1 value={c.toFixed(1)} on:input="{inputC}">°C</label>
-	<label>=<input type=number step=0.1 value={f.toFixed(1)} on:input="{inputF}">°F</label>
-	<label>=<input type=number step=0.1 value={k.toFixed(2)} on:input="{inputK}">K</label>
+	<label><input type=number step=0.1 value={c} on:input="{inputC}">°C</label>
+	<label>=<input type=number step=0.1 value={f} on:input="{inputF}">°F</label>
+	<label>=<input type=number step=0.1 value={k} on:input="{inputK}">K</label>
 </fieldset>
