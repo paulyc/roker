@@ -62,12 +62,11 @@
 		src: url(/AurulentSansMono.woff2);
 	}
 	main {
-		display: flex;
+		/*display: flex;*/
 		font-family: 'Aurulent Sans Mono';/* 'Agave Nerd Font Mono';*/
 		font-size: 10pt;
 	}
 	div {
-		/*max-width: 40%;*/
 		display: flex;
 		float:inline-start;
 	}
