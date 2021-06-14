@@ -20,7 +20,7 @@
 // SOFTWARE.
 //
 
-const {
+import {
 	StdAtmosphere,
 	DegreesCtoF,
 	DegreesFtoC,
@@ -37,12 +37,12 @@ const {
 	AltitudePressureCoeff,
 	MolarMassAir,
 	MolarMass,
-} = require('../lib/physics');
+} from '../lib/physics.mjs';
 
-const assert = require('assert');
+import assert from 'assert';
 const eq = assert.strictEqual;
 
-function Test() {
+export default function Test() {
 	TestCtoF();
 	TestFtoC();
 	TestCtoK();
@@ -50,8 +50,6 @@ function Test() {
 	TestEnthalpy();
 	TestAltitudePressure();
 };
-
-module.exports = Test;
 
 function TestCtoF() {
 	assert.strictEqual(DegreesCtoF(-40).toFixed(1), '-40.0');

@@ -1,7 +1,7 @@
 
 <script>
 	import {createEventDispatcher} from 'svelte';
-	import * as Physics from '../../lib/physics.js';
+	import * as Physics from '../../lib/physics.mjs';
 	//import {FmtNumber} from '../../lib/number.mjs';
 
 	let dispatch = createEventDispatcher();

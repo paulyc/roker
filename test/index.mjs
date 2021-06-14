@@ -20,12 +20,11 @@
 // SOFTWARE.
 //
 
-const Test = require('./physics');
-const physics = require('./physics');
-const rhcalc = require('./rhcalc');
-const units = require('./units');
+import physics from './physics.mjs';
+import rhcalc from './rhcalc.mjs';
+import units from './units.mjs';
 
-module.exports = function Test() {
+export function Test() {
     physics();
     rhcalc();
     units();

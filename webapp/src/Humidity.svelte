@@ -1,6 +1,6 @@
 <script>
 	import {createEventDispatcher} from 'svelte';
-	import * as Physics from '../../lib/physics.js';
+	import * as Physics from '../../lib/physics.mjs';
 	import Temp from './Temp.svelte';
 
 	let dispatch = createEventDispatcher();

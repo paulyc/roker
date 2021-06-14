@@ -1,7 +1,7 @@
 <script>
 import Temp from './Temp.svelte';
 import Humidity from './Humidity.svelte';
-import * as Physics from '../../lib/physics.js';
+import * as Physics from '../../lib/physics.mjs';
 import {createEventDispatcher} from 'svelte';
 import {writable} from 'svelte/store';
 
