@@ -2,12 +2,9 @@
 import Temp from './Temp.svelte';
 import Humidity from './Humidity.svelte';
 import * as Physics from '../../lib/physics.mjs';
-import {createEventDispatcher} from 'svelte';
 import {writable} from 'svelte/store';
 
-//const dispatch = createEventDispatcher();
-
-let T = 25;
+export let T;
 let humidity;
 export let P_a;
 export let P_w;
@@ -35,42 +32,29 @@ $: totaloutput = airconsensible+airconlatent;
 $: airconduty = totalinput/totaloutput * 60;
 $: aircondailycost = 24/60 * (airconduty * airconpower) * dollarsperkwh/1000;
 
-$:  h_air = Physics.SpecificEnthalpyAir(T,P_w,P_a);
-$:  h_dry_air = Physics.SpecificEnthalpyDryAir(T,P_a);
-$:  h_sat_air = Physics.SpecificEnthalpySaturatedAir(T,P_a);
-$:  h_h2o = Physics.SpecificEnthalpyH2O(T,P_w,P_a);
+$:  h_air = Physics.SpecificEnthalpyAir($T,$P_w,$P_a);
+$:  h_dry_air = Physics.SpecificEnthalpyDryAir($T,$P_a);
+$:  h_sat_air = Physics.SpecificEnthalpySaturatedAir($T,$P_a);
+$:  h_h2o = Physics.SpecificEnthalpyH2O($T,$P_w,$P_a);
 $:  h_density = h_air*density;
 
-$: density=Physics.DensityAir(T,P_w,P_a);
-$: O2pressure=Physics.PartialPressure('O2',P_w,P_a);
-$: CO2pressure=100*Physics.PartialPressure('CO2',P_w,P_a);
-$: O2volratio=100*Physics.VolumeRatio('O2',P_w,P_a);
-$: O2massratio=100*Physics.MassRatio('O2',P_w,P_a);
-$: O2absolute=1000*Physics.AbsoluteMass('O2',T,P_w,P_a); //grams
-$: CO2absolute=1000000*Physics.AbsoluteMass('CO2',T,P_w,P_a); //milligrams
-/*
-$:  dispatch('update',{
-        T,
-        P_w,P_a,
-        h_air,h_dry_air,h_sat_air,h_h2o,
-        density,O2pressure,O2volratio,O2massratio,O2absolute
-    });
-*/
-function updateTemp({detail:{c}}) {
-    if (c ==null) return;
-    T = c;
-    humidity.updateTemp(T);
-}
+$: density=Physics.DensityAir($T,$P_w,$P_a);
+$: O2pressure=Physics.PartialPressure('O2',$P_w,$P_a);
+$: CO2pressure=100*Physics.PartialPressure('CO2',$P_w,$P_a);
+$: O2volratio=100*Physics.VolumeRatio('O2',$P_w,$P_a);
+$: O2massratio=100*Physics.MassRatio('O2',$P_w,$P_a);
+$: O2absolute=1000*Physics.AbsoluteMass('O2',$T,$P_w,$P_a); //grams
+$: CO2absolute=1000000*Physics.AbsoluteMass('CO2',$T,$P_w,$P_a); //milligrams
 
-export function partialPressure(P_w) {
-    humidity.updatePartialPressure(P_w);
-    //humidity.$set({P_w});
-}
-
-export function atmosphericPressure(P_a) {
-    humidity.updateAtmosphericPressure(P_a);
-    //humidity.$set({P_a})
-}
+let P_s = writable();
+let P_sl=writable($P_a);
+$: $P_a = $P_sl*altCoeff;
+let altitude=0;
+let altCoeff;
+$: altCoeff = Physics.AltitudePressureCoeff(altitude, $T);
+$: $P_s = Physics.SaturationPressure($T)*altCoeff;
+let P_w_alt = writable();
+$: $P_w_alt = $P_w*altCoeff;
 
 </script>
 
@@ -82,8 +66,11 @@ export function atmosphericPressure(P_a) {
 
 <fieldset>
     <legend>params</legend>
-    <Temp c={T} on:temp="{updateTemp}"><legend>Temperature</legend></Temp>
-    <Humidity bind:this={humidity} tempC={T} bind:P_w bind:P_a />
+    <Temp c={T}><legend>Temperature</legend></Temp>
+    <Humidity bind:this={humidity} tempC={T} P_w={P_w_alt} {P_a} {P_s} />
+    <label><input step=0.1 type=number value="{$P_a}" on:input={e=>$P_a=e.target.value}>hPa Atmospheric Pressure</label>
+	<label><input step=10 type=number bind:value={altitude}>m Altitude</label>
+    <label><input step=0.1 type=number value="{$P_sl}" on:input={e=>$P_a=e.target.value}>hPa Sea-Level Pressure</label>
     <fieldset>
         <legend>Enthalpy</legend>
         <label><input bind:value={h_air} type=number step=0.01>kJ/kg Specific Enthalpy</label>
