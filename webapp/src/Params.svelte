@@ -2,10 +2,7 @@
 import Temp from './Temp.svelte';
 import Humidity from './Humidity.svelte';
 import * as Physics from '../../lib/physics.mjs';
-import {createEventDispatcher} from 'svelte';
 import {writable} from 'svelte/store';
-
-//const dispatch = createEventDispatcher();
 
 export let T;
 let humidity;
@@ -48,27 +45,14 @@ $: O2volratio=100*Physics.VolumeRatio('O2',$P_w,$P_a);
 $: O2massratio=100*Physics.MassRatio('O2',$P_w,$P_a);
 $: O2absolute=1000*Physics.AbsoluteMass('O2',$T,$P_w,$P_a); //grams
 $: CO2absolute=1000000*Physics.AbsoluteMass('CO2',$T,$P_w,$P_a); //milligrams
-/*
-$:  dispatch('update',{
-        T,
-        P_w,P_a,
-        h_air,h_dry_air,h_sat_air,h_h2o,
-        density,O2pressure,O2volratio,O2massratio,O2absolute
-    });
 
-function updateTemp({detail:{c}}) {
-    if (c ==null) return;
-    T = c;
-    humidity.updateTemp(T);
-}
-*/
-
-let P_sl=$P_a;
-$: $P_a = P_sl*altCoeff;
+let P_s = writable();
+let P_sl=writable($P_a);
+$: $P_a = $P_sl*altCoeff;
 let altitude=0;
 let altCoeff;
 $: altCoeff = Physics.AltitudePressureCoeff(altitude, $T);
-$: P_s = Physics.SaturationPressure($T)*altCoeff;
+$: $P_s = Physics.SaturationPressure($T)*altCoeff;
 let P_w_alt = writable();
 $: $P_w_alt = $P_w*altCoeff;
 
@@ -83,9 +67,10 @@ $: $P_w_alt = $P_w*altCoeff;
 <fieldset>
     <legend>params</legend>
     <Temp c={T}><legend>Temperature</legend></Temp>
-    <Humidity bind:this={humidity} tempC={T} P_w={P_w_alt} {P_a} />
+    <Humidity bind:this={humidity} tempC={T} P_w={P_w_alt} {P_a} {P_s} />
     <label><input step=0.1 type=number value="{$P_a}" on:input={e=>$P_a=e.target.value}>hPa Atmospheric Pressure</label>
 	<label><input step=10 type=number bind:value={altitude}>m Altitude</label>
+    <label><input step=0.1 type=number value="{$P_sl}" on:input={e=>$P_a=e.target.value}>hPa Sea-Level Pressure</label>
     <fieldset>
         <legend>Enthalpy</legend>
         <label><input bind:value={h_air} type=number step=0.01>kJ/kg Specific Enthalpy</label>

@@ -5,15 +5,15 @@ import { writable } from 'svelte/store';
 	import Temp from './Temp.svelte';
 
 	export let tempC;
-	let dewpointC=writable();
 	export let P_a;
 	export let P_w;
 
-	let P_s;
-	let relativeHumidity=writable(Physics.RHFromDewpoint($tempC, dewpointC));
-	let altCoeff;
+	export let P_s;
+	let relativeHumidity=writable(Physics.RHFromDewpoint($tempC, $dewpointC));
+	let dewpointC=writable(Physics.DewpointFromPressure($tempC, $P_w));
 	let absoluteHumidity;
     let humidityRatio,mixingRatio;
+	let entry;
 
 	let debounce=0;
 	//$: dewpointC = Physics.DewpointFromPressure(tempC, P_w);
@@ -34,19 +34,27 @@ import { writable } from 'svelte/store';
 		if (debounce || c == null)return;
 		debounce=Date.now();
 		setTimeout(() => {debounce=0;}, 5);
+		entry = 'dewpoint';
 		$dewpointC = c;
-		$relativeHumidity = Physics.RHFromDewpoint($tempC, $dewpointC);
 		$P_w = Physics.PressureFromDewpoint($tempC, $dewpointC);
+		$relativeHumidity = Physics.RHFromDewpoint($tempC, $dewpointC);
 	}
 	export function updatePartialPressure(P) {
-		if (P != null) {
-			$P_w = P;
-		}
+		if (P == null) return;
+		$P_w = P;
 		$dewpointC = Physics.DewpointFromPressure($tempC, $P_w);
-		$relativeHumidity = Physics.RHFromDewpoint($tempC, $dewpointC);
+		$relativeHumidity = Physics.RHFromPressure($tempC, $P_w);
 	}
-
-$: $relativeHumidity = Physics.RHFromDewpoint($tempC, $dewpointC);
+	$: switch (entry){
+		case 'dewpoint':
+			break;
+		case 'rh':
+			break;
+		case 'pressure':
+			break;
+		default:
+			break;
+	}
 
 </script>
 
@@ -65,6 +73,6 @@ $: $relativeHumidity = Physics.RHFromDewpoint($tempC, $dewpointC);
 		<label><input step=0.0001 type=number value="{(1e3*absoluteHumidity)}">g/m<sup>3</sup> Volumetric (Absolute) Humidity</label>
 		<label><input step=0.0001 type=number value="{(100*humidityRatio)}">% Humidity Ratio (mass H<sub>2</sub>O:total airmass)</label>
 		<label><input step=0.0001 type=number value="{(1000*mixingRatio)}">g/kg Specific Humidity (Mixing Ratio, mass H<sub>2</sub>O:mass dry air)</label>
-		<label><input step=0.01 type=number value="{P_s}">hPa Saturation Pressure H<sub>2</sub>O</label>
+		<label><input step=0.01 type=number value="{$P_s}">hPa Saturation Pressure H<sub>2</sub>O</label>
 	</fieldset></details>
 </fieldset>
