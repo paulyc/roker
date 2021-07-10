@@ -23,11 +23,13 @@
 import physics from './physics.mjs';
 import rhcalc from './rhcalc.mjs';
 import units from './units.mjs';
+import units2 from './units2.mjs';
 
 export function Test() {
     physics();
     rhcalc();
     units();
+    units2();
 };
 
 Test();
