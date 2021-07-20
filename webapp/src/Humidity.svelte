@@ -10,6 +10,8 @@ import { writable } from 'svelte/store';
 
 	export let P_s;
 	let relativeHumidity=writable(Physics.RHFromDewpoint($tempC, $dewpointC));
+	let wetBulbTempC=writable();
+	$: $wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
 	let dewpointC=writable(Physics.DewpointFromPressure($tempC, $P_w));
 	let absoluteHumidity;
     let humidityRatio,mixingRatio;
@@ -45,6 +47,7 @@ import { writable } from 'svelte/store';
 		$dewpointC = Physics.DewpointFromPressure($tempC, $P_w);
 		$relativeHumidity = Physics.RHFromPressure($tempC, $P_w);
 	}
+	updatePartialPressure($P_w);
 	$: switch (entry){
 		case 'dewpoint':
 			break;
@@ -69,6 +72,7 @@ import { writable } from 'svelte/store';
 	<Temp c={dewpointC} on:temp={updateDewpoint}><legend>Dewpoint/Frostpoint</legend></Temp>
 	<label><input step=0.1 type=number value={$relativeHumidity} on:input="{updateRH}">% Relative Humidity</label>
 	<label><input step=0.01 type=number value="{$P_w}">hPa Partial Pressure H<sub>2</sub>O</label>
+	<Temp c={wetBulbTempC}><legend>Wet Bulb Temp</legend></Temp>
 	<details><fieldset>
 		<label><input step=0.0001 type=number value="{(1e3*absoluteHumidity)}">g/m<sup>3</sup> Volumetric (Absolute) Humidity</label>
 		<label><input step=0.0001 type=number value="{(100*humidityRatio)}">% Humidity Ratio (mass H<sub>2</sub>O:total airmass)</label>
