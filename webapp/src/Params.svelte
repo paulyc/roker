@@ -56,6 +56,12 @@ $: $P_s = Physics.SaturationPressure($T)*altCoeff;
 let P_w_alt = writable();
 $: $P_w_alt = $P_w*altCoeff;
 
+function updateHumidity({detail:{P_w}}) {
+
+}
+function updateTemp(){
+    humidity.update();
+}
 </script>
 
 <style>
@@ -66,11 +72,8 @@ $: $P_w_alt = $P_w*altCoeff;
 
 <fieldset>
     <legend>params</legend>
-    <Temp c={T}><legend>Temperature</legend></Temp>
-    <Humidity bind:this={humidity} tempC={T} P_w={P_w_alt} {P_a} {P_s} />
-    <label><input step=0.1 type=number value="{$P_a}" on:input={e=>$P_a=e.target.value}>hPa Atmospheric Pressure</label>
-	<label><input step=10 type=number bind:value={altitude}>m Altitude</label>
-    <label><input step=0.1 type=number value="{$P_sl}" on:input={e=>$P_a=e.target.value}>hPa Sea-Level Pressure</label>
+    <Temp c={T} on:temp={updateTemp}><legend>Temperature</legend></Temp>
+    <Humidity bind:this={humidity} tempC={T} {P_w} {P_a} {P_s} />
     <fieldset>
         <legend>Enthalpy</legend>
         <label><input bind:value={h_air} type=number step=0.01>kJ/kg Specific Enthalpy</label>
@@ -83,6 +86,9 @@ $: $P_w_alt = $P_w*altCoeff;
     </fieldset>
     <fieldset>
         <legend>Pressure/Density</legend>
+        <label><input step=0.1 type=number value="{$P_a}" on:input={e=>$P_a=e.target.value}>hPa Atmospheric Pressure</label>
+        <label><input step=10 type=number bind:value={altitude}>m Altitude</label>
+        <label><input step=0.1 type=number value="{$P_sl}" on:input={e=>$P_a=e.target.value}>hPa Sea-Level Pressure</label>
         <label><input type=number step=1 bind:value={O2absolute}>g/m<sup>3</sup> O<sub>2</sub> Density</label>
         <details>
             <label><input type=number step=0.01 bind:value={density}>kg/m<sup>3</sup> Air Density</label>

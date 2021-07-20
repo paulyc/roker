@@ -9,7 +9,7 @@
 	let fixedPressure=true;
 	let station='KFMY';
 
-	let T_1=writable(25),T_2=writable(25);
+	let T_1=writable(30),T_2=writable(30);
 	let P_a_1=writable(Physics.StdAtmosphere);
 	let P_w_1=writable(Physics.PressureFromDewpoint($T_1, 25));
 	let P_a_2=writable(Physics.StdAtmosphere);

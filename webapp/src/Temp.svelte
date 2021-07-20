@@ -11,7 +11,7 @@
 	let k;
 	let debounce = 0;
 
-	$: inputC({target:{value:$c}});
+	inputC({target:{value:$c}});
 
 	function inputC({target:{value}}) {
 		if (debounce||value==null) return;
