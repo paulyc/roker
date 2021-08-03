@@ -1,6 +1,5 @@
 <script>
-//	import {createEventDispatcher} from 'svelte';
-import { writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
 	import * as Physics from '../../lib/physics.mjs';
 	import Temp from './Temp.svelte';
 
@@ -9,13 +8,12 @@ import { writable } from 'svelte/store';
 	export let P_w;
 
 	export let P_s;
-//	const dispatch=createEventDispatcher();
 	let relativeHumidity=writable();
 	let wetBulbTempC=writable();
 	let dewpointC=writable();
 	let absoluteHumidity;
-    let humidityRatio,mixingRatio;
-	let entry;
+    let humidityRatio;
+	let mixingRatio;
 
 	let debounce=0;
 	//$: dewpointC = Physics.DewpointFromPressure($tempC, $P_w);
@@ -37,7 +35,6 @@ import { writable } from 'svelte/store';
 		if (debounce || c == null)return;
 		debounce=Date.now();
 		setTimeout(() => {debounce=0;}, 50);
-		entry = 'dewpoint';
 		$dewpointC = c;
 		$P_w = Physics.PressureFromDewpoint($tempC, $dewpointC);
 		$relativeHumidity = Physics.RHFromDewpoint($tempC, $dewpointC);
@@ -57,16 +54,9 @@ import { writable } from 'svelte/store';
 		updatePartialPressure({target:{value:$P_w}});
 	}
 	update();
-	$: switch (entry){
-		case 'dewpoint':
-			break;
-		case 'rh':
-			break;
-		case 'pressure':
-			break;
-		default:
-			break;
-	}
+
+	let wetbulb;
+	$: if (wetbulb && $wetBulbTempC) wetbulb.update();
 
 </script>
 
@@ -81,7 +71,7 @@ import { writable } from 'svelte/store';
 	<Temp c={dewpointC} on:temp={updateDewpoint}><legend>Dewpoint/Frostpoint</legend></Temp>
 	<label><input step=0.1 type=number value={$relativeHumidity} on:input="{updateRH}">% Relative Humidity</label>
 	<label><input step=0.01 type=number value="{$P_w}" on:input={updatePartialPressure}>hPa Partial Pressure H<sub>2</sub>O</label>
-	<Temp c={wetBulbTempC}><legend>Wet Bulb Temp</legend></Temp>
+	<Temp c={wetBulbTempC} bind:this={wetbulb}><legend>Wet Bulb Temp</legend></Temp>
 	<details><fieldset>
 		<label><input step=0.0001 type=number value="{(1e3*absoluteHumidity)}">g/m<sup>3</sup> Volumetric (Absolute) Humidity</label>
 		<label><input step=0.0001 type=number value="{(100*humidityRatio)}">% Humidity Ratio (mass H<sub>2</sub>O:total airmass)</label>

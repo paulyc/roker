@@ -56,12 +56,6 @@ $: $P_s = Physics.SaturationPressure($T)*altCoeff;
 let P_w_alt = writable();
 $: $P_w_alt = $P_w*altCoeff;
 
-function updateHumidity({detail:{P_w}}) {
-
-}
-function updateTemp(){
-    humidity.update();
-}
 </script>
 
 <style>
@@ -72,7 +66,7 @@ function updateTemp(){
 
 <fieldset>
     <legend>params</legend>
-    <Temp c={T} on:temp={updateTemp}><legend>Temperature</legend></Temp>
+    <Temp c={T} on:temp={()=>humidity&&humidity.update()}><legend>Temperature</legend></Temp>
     <Humidity bind:this={humidity} tempC={T} {P_w} {P_a} {P_s} />
     <fieldset>
         <legend>Enthalpy</legend>
