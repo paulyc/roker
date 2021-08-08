@@ -38,7 +38,7 @@ $:  h_sat_air = Physics.SpecificEnthalpySaturatedAir($T,$P_a);
 $:  h_h2o = Physics.SpecificEnthalpyH2O($T,$P_w,$P_a);
 $:  h_density = h_air*density;
 
-$: density=1000*Physics.DensityAir($T,$P_w,$P_a);
+$: density=Physics.DensityAir($T,$P_w,$P_a);
 $: O2pressure=Physics.PartialPressure('O2',$P_w,$P_a);
 $: CO2pressure=Physics.PartialPressure('CO2',$P_w,$P_a);
 $: O2volratio=100*Physics.VolumeRatio('O2',$P_w,$P_a);
@@ -74,7 +74,7 @@ $: $P_w_alt = $P_w*altCoeff;
         <details>
             <label><input bind:value={h_dry_air} on:input type=number step=0.01>kJ/kg Specific Enthalpy (Dry Air)</label>
             <label><input bind:value={h_sat_air} on:input type=number step=0.01>kJ/kg Specific Enthalpy (Saturated Air)</label>
-            <label><input bind:value={h_h2o} on:input type=number step=0.01>kJ/kg Specific Enthalpy (H<sub>2</sub>O/Latent)</label>
+            <label><input bind:value={h_h2o} on:input type=number step=0.01>kJ/kg Specific Enthalpy (H<sub>2</sub>O)</label>
             <label><input bind:value={h_density} on:input type=number step=0.01>kJ/m<sup>3</sup> Enthalpy Density</label>
         </details>
     </fieldset>
@@ -85,7 +85,7 @@ $: $P_w_alt = $P_w*altCoeff;
         <label><input step=0.1 type=number value="{$P_sl}" on:input={e=>$P_a=e.target.value}>hPa Sea-Level Pressure</label>
         <label><input type=number step=1 bind:value={O2absolute}>g/m<sup>3</sup> O<sub>2</sub> Density</label>
         <details>
-            <label><input type=number step=0.01 bind:value={density}>g/m<sup>3</sup> Air Density</label>
+            <label><input type=number step=0.01 bind:value={density}>kg/m<sup>3</sup> Air Density</label>
             <label><input type=number step=1 bind:value={O2pressure}>hPa Partial Pressure O<sub>2</sub></label>
             <label><input type=number step=1 bind:value={CO2pressure}>hPa Partial Pressure CO<sub>2</sub></label>
             <label><input type=number step=1 bind:value={CO2absolute}>g/m<sup>3</sup> CO<sub>2</sub> Density</label>
