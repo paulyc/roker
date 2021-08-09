@@ -12,6 +12,7 @@
 	let wetBulbTempC=writable();
 	let dewpointC=writable();
 	let absoluteHumidity;
+	let specificHumidity;
     let humidityRatio;
 	let mixingRatio;
 
@@ -19,7 +20,7 @@
 	//$: dewpointC = Physics.DewpointFromPressure($tempC, $P_w);
 	//$: relativeHumidity = Physics.RHFromPressure($tempC, $P_w);
 	$: absoluteHumidity = Physics.AbsoluteHumidity($tempC, $P_w, $P_a);
-	$: humidityRatio = Physics.HumidityRatio($P_w, $P_a);
+	$: specificHumidity = Physics.SpecificHumidity($tempC, $P_w, $P_a);
 	$: mixingRatio = Physics.MixingRatio($tempC,$P_w,$P_a);
 
 	function updateRH({target:{value}}) {
@@ -74,8 +75,8 @@
 	<Temp c={wetBulbTempC} bind:this={wetbulb}><legend>Wet Bulb Temp</legend></Temp>
 	<details><fieldset>
 		<label><input step=0.0001 type=number value="{(1e3*absoluteHumidity)}">g/m<sup>3</sup> Volumetric (Absolute) Humidity</label>
-		<label><input step=0.0001 type=number value="{(100*humidityRatio)}">% Humidity Ratio (mass H<sub>2</sub>O:total airmass)</label>
-		<label><input step=0.0001 type=number value="{(1000*mixingRatio)}">g/kg Specific Humidity (Mixing Ratio, mass H<sub>2</sub>O:dry airmass)</label>
+		<label><input step=0.0001 type=number value="{(1000*mixingRatio)}">g/kg Mixing Ratio (mass H<sub>2</sub>O:dry airmass)</label>
+		<label><input step=0.0001 type=number value="{(1000*specificHumidity)}">g/kg Specific Humidity (mass H<sub>2</sub>O:total airmass)</label>
 		<label><input step=0.01 type=number value="{$P_s}">hPa Saturation Pressure H<sub>2</sub>O</label>
 	</fieldset></details>
 </fieldset>
