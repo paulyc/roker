@@ -1,5 +1,5 @@
 _: test
 
 test:
-	node test/index.js
+	node test/index.mjs
 .PHONY: test

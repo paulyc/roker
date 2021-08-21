@@ -1,4 +1,5 @@
-// Copyright (C) 2021 Paul Ciarlo <paul.ciarlo@ getMaxListeners.com
+//
+// Copyright (C) 2021 Paul Ciarlo <paul.ciarlo@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,17 +18,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+//
 
-const Physics = require('./physics');
-const RHCalc = require('./rhcalc');
-const logger = require('./logger');
-const Units = require('./units');
+import physics from './physics.mjs';
+import rhcalc from './rhcalc.mjs';
+import units from './units.mjs';
+import units2 from './units2.mjs';
 
-let _exports = {
-    logger,
-    Physics,
-    RHCalc,
-    Units,
+export function Test() {
+    physics();
+    rhcalc();
+    units();
+    units2();
 };
 
-if ('object'===typeof module) module.exports = _exports;
+Test();

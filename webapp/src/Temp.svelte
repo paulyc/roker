@@ -1,39 +1,44 @@
 
 <script>
 	import {createEventDispatcher} from 'svelte';
-	import * as Physics from '../../lib/physics.js';
+	import * as Physics from '../../lib/physics.mjs';
+	//import {FmtNumber} from '../../lib/number.mjs';
 
 	let dispatch = createEventDispatcher();
 
 	export let c;
+	let localc=$c;
 	let f;
 	let k;
 	let debounce = 0;
 
-	$: inputC({target:{value:c}});
-
+	export function update(){inputC({target:{value:$c}});}
+	update();
 	function inputC({target:{value}}) {
-		if (debounce||value==null) return;
+		if (debounce||value==null||Number.isNaN(value)) return;
 		debounce=Date.now();
 		setTimeout(() => {debounce=0;}, 10);
-		c = +value;
-		f = Physics.DegreesCtoF(c);
-		k = Physics.DegreesCtoK(c);
-		dispatch('temp', {c,f,k});
+		localc = +value;
+		f = Physics.DegreesCtoF(localc);
+		k = Physics.DegreesCtoK(localc);
+		$c = localc;
+		dispatch('temp', {c:localc,f,k});
 	}
 	function inputF({target:{value}}) {
-		if (debounce||value==null) return;
+		if (debounce||value==null||Number.isNaN(value)) return;
 		f = +value;
-		c = Physics.DegreesFtoC(f);
-		k = Physics.DegreesCtoK(c);
-		dispatch('temp', {c,f,k});
+		localc = Physics.DegreesFtoC(f);
+		k = Physics.DegreesCtoK(localc);
+		$c = localc;
+		dispatch('temp', {c:localc,f,k});
 	}
 	function inputK({target:{value}}) {
-		if (debounce||value==null) return;
+		if (debounce||value==null||Number.isNaN(value)) return;
 		k = +value;
-		c = Physics.DegreesKtoC(k);
-		f = Physics.DegreesCtoF(c);
-		dispatch('temp', {c,f,k});
+		localc = Physics.DegreesKtoC(k);
+		f = Physics.DegreesCtoF(localc);
+		$c = localc;
+		dispatch('temp', {c:localc,f,k});
 	}
 </script>
 
@@ -48,7 +53,7 @@
 
 <fieldset>
 	<slot></slot>
-	<label><input type=number step=0.1 value={c} on:input="{inputC}">°C</label>
+	<label><input type=number step=0.1 value={localc} on:input="{inputC}">°C</label>
 	<label>=<input type=number step=0.1 value={f} on:input="{inputF}">°F</label>
 	<label>=<input type=number step=0.1 value={k} on:input="{inputK}">K</label>
 </fieldset>

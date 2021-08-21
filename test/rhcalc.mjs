@@ -20,10 +20,10 @@
 // SOFTWARE.
 //
 
-const RHCalc = require('../lib/rhcalc');
-const assert = require('assert');
+import RHCalc from '../lib/rhcalc.mjs';
+import assert from 'assert';
 
-module.exports = function Test() {
+export default function Test() {
     //"-c 7.8 -0.6 22.8"
 	//Saturation pressure = [10.58 hPa] Partial pressure at dewpoint/frostpoint = [5.85 hPa]
 	//Calculated RH at temp 1 = [55.3%] RH at temp 2 = [21.1%]
