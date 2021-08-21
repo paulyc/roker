@@ -23,6 +23,11 @@
 	$: specificHumidity = Physics.SpecificHumidity($tempC, $P_w, $P_a);
 	$: mixingRatio = Physics.MixingRatio($tempC,$P_w,$P_a);
 
+	let wetbulb;
+	let dewpoint;
+	//$: if (wetbulb && $wetBulbTempC) wetbulb.update();
+	//$: if (dewpoint && $dewpointC) dewpoint.update();
+
 	function updateRH({target:{value}}) {
 		if (debounce || value == null)return;
 		debounce=Date.now();
@@ -31,6 +36,8 @@
 		$dewpointC = Physics.DewpointFromRH($tempC, $relativeHumidity);
 		$P_w = Physics.PressureFromRH($tempC, $relativeHumidity);
 		$wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
+		wetbulb.update();
+		dewpoint.update();
 	}
 	function updateDewpoint({detail:{c}}) {
 		if (debounce || c == null)return;
@@ -40,6 +47,7 @@
 		$P_w = Physics.PressureFromDewpoint($tempC, $dewpointC);
 		$relativeHumidity = Physics.RHFromDewpoint($tempC, $dewpointC);
 		$wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
+		wetbulb.update();
 	}
 	export function updatePartialPressure({target:{value}}) {
 		if (debounce || value == null)return;
@@ -49,15 +57,14 @@
 		$dewpointC = Physics.DewpointFromPressure($tempC, $P_w);
 		$relativeHumidity = Physics.RHFromPressure($tempC, $P_w);
 		$wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
+		if(wetbulb) wetbulb.update();
+		if(dewpoint) dewpoint.update();
 	}
 
 	export function update(){
 		updatePartialPressure({target:{value:$P_w}});
 	}
 	update();
-
-	let wetbulb;
-	$: if (wetbulb && $wetBulbTempC) wetbulb.update();
 
 </script>
 
@@ -69,7 +76,7 @@
 
 <fieldset>
 	<legend>Humidity</legend>
-	<Temp c={dewpointC} on:temp={updateDewpoint}><legend>Dewpoint/Frostpoint</legend></Temp>
+	<Temp c={dewpointC} bind:this={dewpoint} on:temp={updateDewpoint}><legend>Dewpoint/Frostpoint</legend></Temp>
 	<label><input step=0.1 type=number value={$relativeHumidity} on:input="{updateRH}">% Relative Humidity</label>
 	<label><input step=0.01 type=number value="{$P_w}" on:input={updatePartialPressure}>hPa Partial Pressure H<sub>2</sub>O</label>
 	<Temp c={wetBulbTempC} bind:this={wetbulb}><legend>Wet Bulb Temp</legend></Temp>
