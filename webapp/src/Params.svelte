@@ -2,7 +2,7 @@
 import Temp from './Temp.svelte';
 import Humidity from './Humidity.svelte';
 import * as Physics from '../../lib/physics.mjs';
-import {writable} from 'svelte/store';
+import {writable,derived} from 'svelte/store';
 
 export let T;
 let humidity;
@@ -46,15 +46,12 @@ $: O2massratio=100*Physics.MassRatio('O2',$P_w,$P_a);
 $: O2absolute=1000*Physics.AbsoluteMass('O2',$T,$P_w,$P_a); //grams
 $: CO2absolute=1000*Physics.AbsoluteMass('CO2',$T,$P_w,$P_a); //grams
 
-let P_s = writable();
-let P_sl=writable($P_a);
-$: $P_a = $P_sl*altCoeff;
-let altitude=0;
-let altCoeff;
-$: altCoeff = Physics.AltitudePressureCoeff(altitude, $T);
-$: $P_s = Physics.SaturationPressure($T)*altCoeff;
-let P_w_alt = writable();
-$: $P_w_alt = $P_w*altCoeff;
+let altitude=writable(0);
+let altCoeff = derived([altitude, T], ([$altitude, $T]) => Physics.AltitudePressureCoeff($altitude, $T));
+let P_s = derived([altCoeff, T], ([$altCoeff, $T]) => Physics.SaturationPressure($T)*$altCoeff);
+let P_w_alt = derived([P_w,altCoeff], ([$P_w,$altCoeff]) => $P_w * $altCoeff);
+let P_sl = writable($P_a);
+$: $P_a = $P_sl*$altCoeff;
 
 </script>
 
@@ -81,8 +78,8 @@ $: $P_w_alt = $P_w*altCoeff;
     <fieldset>
         <legend>Pressure/Density</legend>
         <label><input step=0.1 type=number value="{$P_a}" on:input={e=>$P_a=e.target.value}>hPa Atmospheric Pressure</label>
-        <label><input step=10 type=number bind:value={altitude}>m Altitude</label>
-        <label><input step=0.1 type=number value="{$P_sl}" on:input={e=>$P_a=e.target.value}>hPa Sea-Level Pressure</label>
+        <label><input step=10 type=number value={$altitude} on:input={e=>$altitude=e.target.value}>m Altitude</label>
+        <label><input step=0.1 type=number value="{$P_sl}" on:input={e=>$P_sl=e.target.value}>hPa Sea-Level Pressure</label>
         <label><input type=number step=1 bind:value={O2absolute}>g/m<sup>3</sup> O<sub>2</sub> Density</label>
         <details>
             <label><input type=number step=0.01 bind:value={density}>kg/m<sup>3</sup> Air Density</label>

@@ -1,8 +1,7 @@
 
 <script>
-	import {createEventDispatcher} from 'svelte';
+	import {createEventDispatcher,tick} from 'svelte';
 	import * as Physics from '../../lib/physics.mjs';
-	//import {FmtNumber} from '../../lib/number.mjs';
 
 	let dispatch = createEventDispatcher();
 
@@ -12,28 +11,32 @@
 	let k;
 	let debounce = 0;
 
-	export function update(){inputC({target:{value:$c}});}
+	export function update(val){inputC({target:{value:val||$c}});}
 	update();
-	function inputC({target:{value}}) {
+
+	async function inputC({target:{value}}) {
 		if (debounce||value==null||Number.isNaN(value)) return;
-		debounce=Date.now();
-		setTimeout(() => {debounce=0;}, 10);
+		//debounce=Date.now();
+		//setTimeout(() => {debounce=0;}, 10);
+		await tick();
 		localc = +value;
 		f = Physics.DegreesCtoF(localc);
 		k = Physics.DegreesCtoK(localc);
 		$c = localc;
 		dispatch('temp', {c:localc,f,k});
 	}
-	function inputF({target:{value}}) {
+	async function inputF({target:{value}}) {
 		if (debounce||value==null||Number.isNaN(value)) return;
+		await tick();
 		f = +value;
 		localc = Physics.DegreesFtoC(f);
 		k = Physics.DegreesCtoK(localc);
 		$c = localc;
 		dispatch('temp', {c:localc,f,k});
 	}
-	function inputK({target:{value}}) {
+	async function inputK({target:{value}}) {
 		if (debounce||value==null||Number.isNaN(value)) return;
+		await tick();
 		k = +value;
 		localc = Physics.DegreesKtoC(k);
 		f = Physics.DegreesCtoF(localc);
