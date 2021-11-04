@@ -18,7 +18,7 @@
 
 	let debounce=0;
 	//$: dewpointC = Physics.DewpointFromPressure($tempC, $P_w);
-	//$: relativeHumidity = Physics.RHFromPressure($tempC, $P_w);
+	//$: $relativeHumidity = Physics.RHFromPressure($tempC, $P_w);
 	$: absoluteHumidity = Physics.AbsoluteHumidity($tempC, $P_w, $P_a);
 	$: specificHumidity = Physics.SpecificHumidity($tempC, $P_w, $P_a);
 	$: mixingRatio = Physics.MixingRatio($tempC,$P_w,$P_a);
