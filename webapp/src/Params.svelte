@@ -53,6 +53,10 @@ let P_w_alt = derived([P_w,altCoeff], ([$P_w,$altCoeff]) => $P_w * $altCoeff);
 let P_sl = writable($P_a);
 $: $P_a = $P_sl*$altCoeff;
 
+export function update() {
+    humidity.update();
+}
+
 </script>
 
 <style>

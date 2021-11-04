@@ -9,15 +9,16 @@
 	let fixedPressure=true;
 	let station='KFMY';
 
-	let T_1=writable(30),T_2=writable(30);
+	let T_1=writable(25),T_2=writable(25);
 	let P_a_1=writable(Physics.StdAtmosphere);
-	let P_w_1=writable(Physics.PressureFromDewpoint($T_1, 25));
+	let P_w_1=writable(Physics.PressureFromDewpoint($T_1, 20));
 	let P_a_2=writable(Physics.StdAtmosphere);
-	let P_w_2=writable(Physics.PressureFromDewpoint($T_2, 25));
+	let P_w_2=writable(Physics.PressureFromDewpoint($T_2, 20));
 
 	$: if (fixedPressure) {
 		$P_w_2 = $P_w_1;
 		$P_a_2 = $P_a_1;
+		params2 && params2.update();
 	}
 	/*function update({detail:{P_w,P_a}}) {
 		if (fixedPressure) {
@@ -87,7 +88,7 @@
 </style>
 
 <main>
-	<div><Params T={T_1} P_a={P_a_1} P_w={P_w_1} /></div>
+	<div><Params T={T_1} P_a={P_a_1} P_w={P_w_1} bind:this={params1}/></div>
 	<p><input type=checkbox bind:checked={fixedPressure}>Fixed Pressure</p>
-	<div><Params T={T_2} P_a={P_a_2} P_w={P_w_2} /></div>
+	<div><Params T={T_2} P_a={P_a_2} P_w={P_w_2} bind:this={params2}/></div>
 </main>
