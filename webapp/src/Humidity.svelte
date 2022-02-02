@@ -1,4 +1,6 @@
 <script>
+import { tick } from 'svelte';
+
 	import { writable } from 'svelte/store';
 	import * as Physics from '../../lib/physics.mjs';
 	import Temp from './Temp.svelte';
@@ -25,38 +27,34 @@
 
 	let wetbulb;
 	let dewpoint;
+	$: $relativeHumidity = Physics.RHFromPressure($tempC,$P_w);
+	$: $dewpointC = Physics.DewpointFromPressure($tempC,$P_w);
+	$: $wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
 	//$: if (wetbulb && $wetBulbTempC) wetbulb.update();
 	//$: if (dewpoint && $dewpointC) dewpoint.update();
 
 	function updateRH({target:{value}}) {
-		if (debounce || value == null)return;
-		debounce=Date.now();
-		setTimeout(() => {debounce=0;}, 50);
+	//	if (debounce || value == null)return;
+	//	debounce=Date.now();
+	//	setTimeout(() => {debounce=0;}, 50);
 		$relativeHumidity = value;
-		$dewpointC = Physics.DewpointFromRH($tempC, $relativeHumidity);
 		$P_w = Physics.PressureFromRH($tempC, $relativeHumidity);
-		$wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
-		wetbulb.update();
-		dewpoint.update();
+	//	await tick();
+	//	wetbulb.update();
+	//	dewpoint.update();
 	}
 	function updateDewpoint({detail:{c}}) {
-		if (debounce || c == null)return;
-		debounce=Date.now();
-		setTimeout(() => {debounce=0;}, 50);
+	//	if (debounce || c == null)return;
+	//	debounce=Date.now();
+	//	setTimeout(() => {debounce=0;}, 50);
 		$dewpointC = c;
 		$P_w = Physics.PressureFromDewpoint($tempC, $dewpointC);
-		$relativeHumidity = Physics.RHFromDewpoint($tempC, $dewpointC);
-		$wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
-		wetbulb.update();
 	}
 	export function updatePartialPressure({target:{value}}) {
-		if (debounce || value == null)return;
-		debounce=Date.now();
-		setTimeout(() => {debounce=0;}, 50);
+	//	if (debounce || value == null)return;
+	//	debounce=Date.now();
+	//	setTimeout(() => {debounce=0;}, 50);
 		$P_w = value;
-		$dewpointC = Physics.DewpointFromPressure($tempC, $P_w);
-		$relativeHumidity = Physics.RHFromPressure($tempC, $P_w);
-		$wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
 		if(wetbulb) wetbulb.update();
 		if(dewpoint) dewpoint.update();
 	}
