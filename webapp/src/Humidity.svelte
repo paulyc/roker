@@ -27,36 +27,47 @@ import { tick } from 'svelte';
 
 	let wetbulb;
 	let dewpoint;
-	$: $relativeHumidity = Physics.RHFromPressure($tempC,$P_w);
-	$: $dewpointC = Physics.DewpointFromPressure($tempC,$P_w);
-	$: $wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
+	//$: $relativeHumidity = Physics.RHFromPressure($tempC,$P_w);
+	//$: $dewpointC = Physics.DewpointFromPressure($tempC,$P_w);
+	//$: $wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
 	//$: if (wetbulb && $wetBulbTempC) wetbulb.update();
 	//$: if (dewpoint && $dewpointC) dewpoint.update();
 
+	function check_debounce(value) {
+		if (debounce || value == null)return true;
+		debounce=Date.now();
+		setTimeout(() => {debounce=0;}, 50);
+		return false;
+	}
 	function updateRH({target:{value}}) {
-	//	if (debounce || value == null)return;
-	//	debounce=Date.now();
-	//	setTimeout(() => {debounce=0;}, 50);
+		if (check_debounce(value)) return;
 		$relativeHumidity = value;
 		$P_w = Physics.PressureFromRH($tempC, $relativeHumidity);
-	//	await tick();
-	//	wetbulb.update();
-	//	dewpoint.update();
+		$dewpointC = Physics.DewpointFromRH($tempC, $relativeHumidity);
+		$wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
+		//await tick();
+		wetbulb && wetbulb.update();
+		dewpoint && dewpoint.update();
 	}
 	function updateDewpoint({detail:{c}}) {
-	//	if (debounce || c == null)return;
-	//	debounce=Date.now();
-	//	setTimeout(() => {debounce=0;}, 50);
+		if (check_debounce(c)) return;
 		$dewpointC = c;
 		$P_w = Physics.PressureFromDewpoint($tempC, $dewpointC);
+		$relativeHumidity = Physics.RHFromDewpoint($tempC, $dewpointC);
+		$wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
+		//await tick();
+		wetbulb && wetbulb.update();
+		dewpoint && dewpoint.update();
 	}
 	export function updatePartialPressure({target:{value}}) {
-	//	if (debounce || value == null)return;
-	//	debounce=Date.now();
-	//	setTimeout(() => {debounce=0;}, 50);
+		if (check_debounce(value)) return;
 		$P_w = value;
-		if(wetbulb) wetbulb.update();
-		if(dewpoint) dewpoint.update();
+		//await tick();
+		$dewpointC = Physics.DewpointFromPressure($tempC, $P_w);
+		$relativeHumidity = Physics.RHFromPressure($tempC, $P_w);
+		$wetBulbTempC = Physics.WetBulbTemp($tempC,$relativeHumidity);
+		wetbulb && wetbulb.update();
+		dewpoint && dewpoint.update();
 	}
 
 	export function update(){

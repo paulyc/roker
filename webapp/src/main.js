@@ -4,7 +4,7 @@ var oldAddEventListener = EventTarget.prototype.addEventListener;
 EventTarget.prototype.addEventListener = function(eventName, eventHandler)
 {
   oldAddEventListener.call(this, eventName, function(event) {
-    console.log(event);
+    console.debug(event);
       eventHandler(event);
   });
 };
